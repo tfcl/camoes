@@ -1,0 +1,136 @@
+@font-face {
+
+   
+    font-family: myFirstFont;
+    src: url(font.otf);}
+    #mainNavbar .redFont {
+      font-size: 30px;
+
+    }
+    .redFont{
+    color:#b30000;
+    font-family: myFirstFont ;
+   
+}
+.cardW{
+  width: 10px;
+}
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  border: 3px solid green;
+}
+.redColor{
+  color:#b30000;
+}
+    #banner{
+    font-family: myFirstFont ;
+    text-transform: uppercase;
+    background: #ffffcc;
+    
+}
+#mainNavbar #currente  {
+  background-color: white;
+  color: #b30000;
+  border-radius: 4px;
+  
+}
+#searchbutton{
+  
+  background-color: white;
+  border: none;
+
+}
+#leftBar{
+  width:218px;
+  float: left;
+}
+.search-container{
+  height: 10px;
+}
+.row-width{
+  width: 150px;
+}
+  
+  
+  #mainNavbar{
+      background: #b30000;
+      border-bottom: 3px solid #b30000 ;
+      border-top: 3px solid #b30000 ;
+      
+  }
+  #mainNavbar .nav-item{
+    color: white;
+    
+}
+
+ /* The sidebar menu */
+ .sidenav {
+  /* Full-height: remove this if you want "auto" height */
+  width: 160px; /* Set the width of the sidebar */
+  position: fixed; /* Fixed Sidebar (stay in place on scroll) */
+  z-index: 1; /* Stay on top */
+  top: 0; /* Stay at the top */
+  left: 0;
+  background-color: #111; /* Black */
+  overflow-x: hidden; /* Disable horizontal scroll */
+  padding-top: 20px;
+}
+
+/* The navigation menu links */
+.sidenav a {
+  padding: 6px 8px 6px 16px;
+  text-decoration: none;
+  font-size: 25px;
+  color: #818181;
+  display: block;
+}
+
+/* When you mouse over the navigation links, change their color */
+.sidenav a:hover {
+  color: #f1f1f1;
+}
+
+/* Style page content */
+.main {
+  margin-left: 160px; /* Same as the width of the sidebar */
+  padding: 0px 10px;
+}
+
+/* On smaller screens, where height is less than 450px, change the style of the sidebar (less padding and a smaller font size) */
+@media screen and (max-height: 450px) {
+  .sidenav {padding-top: 15px;}
+  .sidenav a {font-size: 18px;}
+} 
+#mainNavbar .nav-item:hover{
+    color: #ffffcc;
+    
+}
+  #order h1{
+    background-color: #b30000;
+    font-size: 15px;
+    text-align:center;
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+    color: white;
+
+  }
+  #order h2{
+    margin-top: 0px;
+    margin-bottom: 0px;
+    margin-left: 8px ;
+    font-size: 18px;
+
+  }
+  #order a{
+      font-size: 13px;
+      margin-left: 12px;
+  }
+  #order .verMais{
+    font-size: 12px;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  

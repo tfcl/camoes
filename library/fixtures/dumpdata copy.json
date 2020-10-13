@@ -1,0 +1,50 @@
+[
+    {
+        "model":"libary.models.Publisher",
+        "pk":1,
+
+        "fields":{
+            "name":"caminho",
+            "books":[1,2]
+        }
+    
+
+
+    },
+
+    {
+        "model":"libary.models.Book",
+        "pk":1,
+
+        "fields":{
+            "title":"22222",
+            "stock":"113",
+            "year":1999,
+            "isbn":"555-454564-5454",
+            "status":"disponivel"
+
+        }
+
+
+
+    },
+
+    {
+        "model":"libary.models.Book",
+        "pk":2,
+
+        "fields":{
+            "title":"fdkfm",
+            "stock":"112",
+            "year":1999,
+            "isbn":"555-454564-5454",
+            "status":"disponivel"
+
+        }
+
+
+
+    }
+
+
+]

@@ -1,0 +1,68 @@
+
+{%extends "library/base.html"%}
+{% load my_tags %}  
+{%block content %}        
+<div class="container mt-2">
+                <h1  style="font-family: myFirstFont; text-transform:uppercase; color: #009900; ">Requisitar Livro</h1>
+                <img   src="imgs/hrtop.png" alt="" width="100%">
+                <!-- <hr class="m-0 mb-2" style="border:1.5px solid #79790b; border-radius: 5px;"> -->
+                
+                <form method="GET">
+                      {%if id%}
+                      
+                      <div class="form-group">
+
+                        Nome: {{id}}
+                        <input type="hidden"  name="id" value={{id}}>
+                      {%else%}
+
+                      
+                      <div class="form-group">
+                        <label for="utilizador">Utilizador:</label>
+                      
+                        <input name="id" type="text" class="form-control" id="utilizador" placeholder="Insira o número de aluno">
+                      
+                      <button type="submit" style="background-color: #b30000;" value= "submit"class="btn text-white mt-1">Selecionar Aluno</button>
+                      
+                      </form>
+                      {%endif%}
+                      
+                    </div>
+                    <div class="form-group">
+                        <label for="livro">Livro:</label>
+                        {%for book in checkedBooks%}
+                          {{book.Book}}
+                          <p>{{book.title}}</p>
+                          <input type="hidden"   name="book" value={{book.title}}>
+                        {%endfor%}
+                        <input type="text" name="book" class="form-control" id="livro"   placeholder="Insira o código do livro">
+                        
+                      </div>
+                      <div class="form-group">
+                        <label for="livro">Adicionar livro</label>
+                        <button type="submit" style="background-color: #b30000;" class="btn text-white"><i class="fas fa-plus"></i> </button>
+                        
+                      </div>
+                    </form>
+
+                      {%if checkedBooks%}
+                      <form method='GET' id="form1"> 
+                        <!-- {% csrf_token %} -->
+                          <input type="hidden"  name="id" value={{id}}>
+                          {%for book in checkedBooks%}
+                            <input type="hidden"  name="book" value={{book.title}}>
+                          {%endfor%}
+
+                          <input type="hidden"  name="Confirm" value=True>
+
+                      <button class="btn text-white" style="background: #b30000;"  type="submit" form="form1" value="Submit">Confirmar</button>
+                      
+                      {%endif%}
+                      </form>
+
+
+                  
+
+            </div>
+          
+{% endblock content%}
