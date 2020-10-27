@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/3.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
-
+from celery.schedules import crontab   
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -27,12 +27,23 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+#Email Config
 
+EMAIL_BACKEND ='django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'tlourenco9l@gmail.com'
+EMAIL_HOST_PASSWORD ='Quinta5224!'
+
+
+###
 # Application definition
 
 INSTALLED_APPS = [
 
-
+    'channels',
+    'django_celery_results',
     'library.apps.LibraryConfig',
     'users.apps.UsersConfig',
     'django.contrib.admin',
@@ -116,9 +127,49 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
+# Celery Configuration Options
+CELERY_TIMEZONE = "Australia/Tasmania"
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30 * 60
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
+# celery setting.
+CELERY_CACHE_BACKEND = 'default'
+CELERY_BROKER_URL = 'amqp://localhost'
+CELERY_BEAT_SCHEDULE = {
+#  'send-summary-every-hour': {
+#        'task': 'summary',
+#         # There are 4 ways we can handle time, read further 
+#        'schedule': 3600.0,
+#         # If you're using any arguments
+#        'args': (‘We don’t need any’,),
+#     },
+    # Executes every Friday at 4pm
+    'send-notification-on-friday-afternoon': { 
+         'task': 'library.tasks.check_requisitions', 
+         'schedule': 10.0,
+        },         
+}
+# django setting.
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'my_cache_table',
+    }
+}
 
+# Channels
+ASGI_APPLICATION = 'camoes.routing.application'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
+
+#static
 STATIC_URL = '/static/'

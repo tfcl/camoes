@@ -2,16 +2,18 @@ from django.shortcuts import render
 from django.http import HttpResponse
 # Create your views here.
 from .models import Book
-from .models import Publisher
+from .models import Publisher, Notification
 from .models import Author
 from .models import Requisition
+from django.core.mail import send_mail
 
 from datetime import datetime
 from datetime import timedelta  
 from django.contrib.auth.models import User
 from django.views.generic import ListView
 from django.views.generic import TemplateView
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, DeleteView, UpdateView
+
 from django.views.generic import FormView
 from django.views import View
 from django.db.models import Q
@@ -25,7 +27,10 @@ import operator
 from django.contrib import messages
 from library.forms import RequisitionCreateForm
 from functools import reduce
-logger = logging.getLogger('myLog')
+
+from .consumers import notificationConsumer
+
+logger = logging.getLogger('django')
 flag_search=False
 
 
@@ -42,6 +47,28 @@ def cancelRequisition(request):
         return redirect('camoes-home')
 
     return redirect('requisition-confirm')
+
+class RequisitionUpdateView(UpdateView):
+    model = Requisition
+    fields = ['state']
+    template_name_suffix = '/requisition-update'
+    def form_valid(self, form):
+        self.object = form.save()
+        messages.success(self.request, f'Livro Entregue')
+
+        return redirect('requisition-list')
+    def get_initial(self):
+        initial = super().get_initial()
+        
+        initial['state']="Delivered"
+        return initial
+
+class RequisitionListView(ListView):
+    model=Requisition
+    template_name='library/requisition-list.html'
+    context_object_name='requisitions'
+    
+    paginate_by=5
     
 class RequisitionCreateView(CreateView):
     model = Requisition
@@ -49,25 +76,36 @@ class RequisitionCreateView(CreateView):
     form_class=RequisitionCreateForm
  
     def add_days(self):
-        
+        logging.warning("dsdsfdsfdsfdsfdsfdsfdsfdsfdsfgsgdfdsdsfadsdsfffffff")
+        logger.error("dfssssssssssssssssssss")
         day=datetime.now() + timedelta(days=15) 
         day=day.strftime('%d-%m-%Y')
 
         return day
-
+    def create_email(self,BookName,date):
+        logger.warning(date)
+        date=str(date)
+        return "Acabou de requisitat o livro : "+BookName+"a data limite de entrega é "+date 
     def form_valid(self, form):
         logging.debug("form_valid")
+        #logging.debug(Requisition.objects.get(pk=1).state)
+        
+        send_mail("Nova Requisição",self.create_email(form.cleaned_data['book'].title,self.add_days()),"tlourenco9l@gmail.com",[form.cleaned_data['user'].email],fail_silently= False)
 
-
+        logger.warning("sdssaddsaasdd")
+        #form.instance.end_date=self.add_days()
+        logger.warning(form.cleaned_data['user'].pk)
         self.object = form.save()
+
+
         messages.success(self.request, f'Sucesso')
         if len(self.request.session.get('books'))>1:
             del self.request.session['books'][-1]
             self.request.session.modified = True
             
-            logging.debug(Requisition.objects.all().count())
+            #logging.debug(Requisition.objects.all().count())
             return redirect('requisition-confirm')
-        logging.debug(Requisition.objects.all().count())
+        #logging.debug(Requisition.objects.all().count())
         return redirect('/library')
 
         
@@ -89,7 +127,7 @@ class RequisitionCreateView(CreateView):
         
         context={'book':selectedBook, 'user':selectedUser,'end':self.add_days()}
         context['form']=RequisitionCreateForm
-        context['form']= RequisitionCreateForm(initial={'book': selectedBook.pk, 'user':selectedUser.pk,})
+        context['form']= RequisitionCreateForm(initial={'book': selectedBook.pk, 'user':selectedUser.pk})
 
         #context['form'].fields['book'].initial = selectedBook.pk
         
@@ -107,14 +145,14 @@ class RequisitionView(TemplateView):
             user=self.request.GET.get('id')
             books=self.request.GET.getlist('book')
 
-            logging.debug(user)
-            logging.debug(books)
+            #logging.debug(user)
+            #logging.debug(books)
 
             self.request.session['user']=user
             self.request.session['books']=books
             return redirect('requisition-confirm')
 
-            logging.debug("oii")
+            #logging.debug("oii")
         return super(RequisitionView, self).dispatch(request, *args, **kwargs)
     def get_context_data(self, **kwargs):
         
@@ -125,7 +163,7 @@ class RequisitionView(TemplateView):
         
        
         #checkedBooks=context['checkedBooks']
-        logging.debug(context)
+        #logging.debug(context)
         checkedBooks=[]
         users=User.objects.all()
         
@@ -138,7 +176,7 @@ class RequisitionView(TemplateView):
             if i != lengh-1:
                 checkedBooks.append(book)
             
-        logging.debug(checkedBooks)
+        #logging.debug(checkedBooks)
         
         if query:
             if User.objects.filter(username=query).exists():
@@ -157,7 +195,7 @@ class RequisitionView(TemplateView):
             if booksQuery:
                 if Book.objects.filter(title=booksQuery[-1]).exists():
                     checkedBooks.append(Book.objects.get(title=booksQuery[-1]))
-                    logging.debug(checkedBooks)
+                    #logging.debug(checkedBooks)
 
                     context.update({
                         'checkedBooks':checkedBooks
@@ -171,7 +209,7 @@ class RequisitionView(TemplateView):
                     })
                
         # for book in context['checkedBooks']:
-        #     logging.debug(book)
+        #     #logging.debug(book)
             
         return context
     
@@ -186,7 +224,7 @@ def requisition(request):
     if query:
         if User.objects.filter(username=query).exists():
 
-            logging.debug('oi')
+            #logging.debug('oi')
             messages.success(request, f'{query} é um utilizador válido !')
             context={
                 'id':query
@@ -225,8 +263,13 @@ class BookListView(ListView):
     context_object_name='books'
     
     paginate_by=5
+
+     
     def get_context_data(self, **kwargs):
         
+        
+        notifications=Notification.objects.all()
+
         context = super(BookListView, self).get_context_data(**kwargs)
         query=self.request.GET.get('q')
         filters=self.request.GET.getlist('checkEditora')
@@ -240,11 +283,11 @@ class BookListView(ListView):
         querysetBook=[]
         years=[]
         yearsAll=[]
-        #logging.debug(page1.object_list) 
+        ##logging.debug(page1.object_list) 
         for i, page in enumerate(p.page_range, start=1):
             
             querysetBook.append(p.page(i).object_list)
-        #logging.debug(querysetBook) 
+        ##logging.debug(querysetBook) 
 
         if query:
             books=Book.objects.filter(Q(title__icontains=query))
@@ -263,7 +306,7 @@ class BookListView(ListView):
             for book in Book.objects.all():
                 yearsAll.append(book.year)
             yearsAll = list( dict.fromkeys(yearsAll) )
-            logging.debug(yearsAll)
+            #logging.debug(yearsAll)
             
             for books in querysetBook:
                 for book in books:
@@ -279,10 +322,10 @@ class BookListView(ListView):
 
 
         
-        logging.debug("oiiiiiiiiiiiiii")
+        #logging.debug("oiiiiiiiiiiiiii")
 
         querysetA= Author.objects.filter(id__in=aIds)
-        #logging.debug(books)
+        ##logging.debug(books)
 
         queryset = Publisher.objects.filter(id__in=pIds)
         
@@ -336,20 +379,20 @@ class BookListView(ListView):
                 for filter in filtersAuthor:
                     filtersAuthordict['authors__name__in'].append(filter)
                 books=books.filter(**filtersAuthordict )
-                logging.debug(books)
+                #logging.debug(books)
             if filters:
                 filterdict={'publisher__name__in':[]}
-                logging.debug(books)
+                #logging.debug(books)
                 for filter in filters:
                     filterdict['publisher__name__in'].append(filter) 
-                    logging.debug("-------------------------")
+                    #logging.debug("-------------------------")
 
-                    logging.debug(filterdict)
+                    #logging.debug(filterdict)
 
                 books=books.filter(
                         **filterdict
                     )    
-                logging.debug(books)
+                #logging.debug(books)
             if filtersYear:
                 filterYearsdict={'year__contains':[]}
                 
@@ -358,7 +401,7 @@ class BookListView(ListView):
                     filterYearsdict['year__contains'].append(str(filter)) 
 
                 y=reduce(operator.or_, (Q(year__contains = item) for item in filtersYear))
-                logging.debug(y)
+                #logging.debug(y)
                 books=books.filter(
                         #**filterYearsdict
                         y

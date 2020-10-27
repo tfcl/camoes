@@ -1,0 +1,97 @@
+
+{%extends "library/base.html"%}
+{% load my_tags %}  
+{%block content %}  
+
+{%for requisition in requisitions%}
+          
+        <div class="card border border-danger mb-3 flex-row flex-wrap " >
+          <div class="card-header text-center border-0 d-flex align-items-center justify-content-center " style="width: 130px; ">
+            <p style="text-align:center;font-size: 20px;"><i class="fas fa-book fa-lg align-middle inline "style="color:#b30000;"></i></p>
+            <!-- <img src="//placehold.it/200" alt=""> -->
+          </div>
+          <div class="card-body">
+            <h5 class="card-title">{{requisition.book.title}}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">
+
+          </h6>
+
+            <div class="row " >
+              <div class="col" style="max-width: 400px;" >
+                <table class="table table-borderless " >
+                    <tr style="border-bottom: 1px solid rgb(241, 200, 200);">
+                        <th class="text-right row-width" scope="row">Nº do Aluno:</th>
+                        <td >{{requisition.user.username}}</th>
+            
+                    </tr>
+                    <tr style="border-bottom: 1px solid rgb(241, 200, 200);">
+                        <th class="text-right row-width" scope="row">Estado:</th>
+                        {%ifequal requisition.state 'Not Delivered'%}
+                            <td >Não Entregue</th>
+                        {%endifequal%}
+                        {%ifequal requisition.state 'Delivered' %}
+                            <td >Entregue</th>  
+                        
+                        
+                        {%endifequal%} 
+                        {%ifequal requisition.state 'Delayed' %}
+                        <td >Atrasado</th>  
+                    
+                    
+                        {%endifequal%}            
+
+                    </tr>
+                    <tr style="border-bottom: 1px solid rgb(241, 200, 200);">
+                        <th class="text-right row-width" scope="row">Data de Requisição:</th>
+                        <td >{{requisition.date}}</th>
+            
+                    </tr>
+                    <tr style="border-bottom: 1px solid rgb(241, 200, 200);">
+                      <th class="text-right row-width" scope="row">Data Limite:</th>
+                      <td >{{requisition.end_date}}</th>
+          
+                  </tr>
+                </table>
+                {%ifequal requisition.state 'Delayed'%}
+                <a class=" btn btn-danger"href="{% url 'requisition-update' requisition.pk %}">Entregar</a>
+                {%endifequal%}
+                {%ifequal requisition.state 'Not Delivered'%}
+                <a class=" btn btn-danger"href="{% url 'requisition-update' requisition.pk %}">Entregar</a>
+                {%endifequal%}
+            </div>
+              
+            </div>
+            
+          </div>
+          
+        </div>
+        {%empty%}
+            <div style=text-align:center>
+              <h1>Não foram encontrados resultados</h1>
+              <a class="btn btn-danger "style="margin:70px auto; display:block;width:140px  " href="{%url 'camoes-home'%}">Voltar Atrás</a>
+            </div>
+{%endfor%}
+{% if is_paginated %}
+
+{% if page_obj.has_previous %}
+  <a class="btn btn-outline-danger mb-4" href="?page=1&{%url_replace%}">Primeira</a>
+  <a class="btn btn-outline-danger mb-4" href="?page={{ page_obj.previous_page_number }}&{%url_replace%}"><i class="fas fa-angle-left fa-lg"></i></a>
+{% endif %}
+
+{% for num in page_obj.paginator.page_range %}
+  {% if page_obj.number == num %}
+    <a class="btn btn-danger mb-4" href="?page={{ num }}&{%url_replace%}">{{ num }}</a>
+  {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+    <a class="btn btn-outline-danger mb-4" href="?page={{ num }}&{%url_replace%}">{{ num }}</a>
+  {% endif %}
+{% endfor %}
+
+{% if page_obj.has_next %}
+  <a class="btn btn-outline-danger mb-4" href="?page={{ page_obj.next_page_number }}&{%url_replace%}"><i class="fas fa-angle-right fa-lg"></i></a>
+  <a class="btn btn-outline-danger mb-4" href="?page={{ page_obj.paginator.num_pages }}&{%url_replace%}">Última</a>
+{% endif %}
+
+{% endif %}
+</div>
+</div>
+        {% endblock content%}

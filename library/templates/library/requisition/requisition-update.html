@@ -1,0 +1,53 @@
+
+{%extends "library/base.html"%}
+{% load my_tags %}  
+{%block content %}  
+
+<div class="container mt-2">
+    <h1 style="font-family: myFirstFont; text-transform:uppercase; color: #009900;">Concluir Requisição</h1>
+    
+    <img   src="imgs/hrtop.png" alt="" width="100%">
+    <table class="table table-borderless " >
+        <tr style="border-bottom: 1px solid rgb(241, 200, 200);">
+            <th class="text-right row-width" scope="row">Nº do Aluno:</th>
+            <td >------</th>
+
+        </tr>
+        <tr style="border-bottom: 1px solid rgb(241, 200, 200);">
+            <th class="text-right" scope="row">Email:</th>
+            <td >{{requisition.user.email}}</th>
+
+        </tr>
+        <tr style="border-bottom: 1px solid rgb(241, 200, 200);">
+            <th class="text-right" scope="row">Nome do Aluno:</th>
+            <td >{{requisition.user.username}}</th>
+
+        </tr>
+        
+        <tr style="border-bottom: 1px solid rgb(241, 200, 200);">
+            <th class="text-right" scope="row">Código do livro:</th>
+            <td >--------</th>
+
+        </tr>
+        <tr style="border-bottom: 1px solid rgb(241, 200, 200);">
+            <th class="text-right" scope="row">Titulo do livro</th>
+            <td >{{requisition.book.title}}</th>
+
+ 
+     </table>       
+
+    <form method="post">
+      {% csrf_token %}
+      
+      
+      {{ form.state.as_hidden }}
+  
+      
+      <input type="submit" class="btn text-white mt-2" value="Entregar" style="background: #b30000;">
+      <a class="btn text-white mt-2" style="background: #b30000;" href="{% url 'requisition-list'%}">Cancelar</a>
+    </form>    
+    </div>
+      
+</div>
+ 
+{% endblock content%}

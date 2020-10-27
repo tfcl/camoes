@@ -16,7 +16,11 @@ urlpatterns = [
     path('notFound/',views.notFound, name='camoes-notFound'),
     path('register/', user_views.register, name='register'),
     path('requisition/confirm', RequisitionCreateView.as_view(), name='requisition-confirm'),
-    path('cancelRequisition', views.cancelRequisition , name='requisition-cancel')
+    path('cancelRequisition', views.cancelRequisition , name='requisition-cancel'),
+    path('requisition/list', views.RequisitionListView.as_view(), name='requisition-list'),
+    path('requisition/<pk>/', views.RequisitionUpdateView.as_view(), name='requisition-update')
+
+
 
 
 ]
