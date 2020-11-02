@@ -12,8 +12,8 @@
                       
                       <div class="form-group">
 
-                        Nome: {{id}}
-                        <input type="hidden"  name="id" value={{id}}>
+                        Nome: {{id.user.username}}
+                        <input type="hidden"  name="id" value={{id.number}}>
                       {%else%}
 
                       
@@ -48,7 +48,7 @@
                       {%if checkedBooks%}
                       <form method='GET' id="form1"> 
                         <!-- {% csrf_token %} -->
-                          <input type="hidden"  name="id" value={{id}}>
+                          <input type="hidden"  name="id" value={{id.number}}>
                           {%for book in checkedBooks%}
                             <input type="hidden"  name="book" value={{book.title}}>
                           {%endfor%}

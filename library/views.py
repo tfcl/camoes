@@ -5,6 +5,7 @@ from .models import Book
 from .models import Publisher, Notification
 from .models import Author
 from .models import Requisition
+from users.models import Profile
 from django.core.mail import send_mail
 
 from datetime import datetime
@@ -25,20 +26,28 @@ from collections import defaultdict
 import logging
 import operator
 from django.contrib import messages
-from library.forms import RequisitionCreateForm
+from library.forms import RequisitionCreateForm,BookCreateForm,AuthorCreateForm,PublisherCreateForm
 from functools import reduce
-
+from copy import deepcopy
 from .consumers import notificationConsumer
+
+from .classLivro import livro,validateIsbn
+
 
 logger = logging.getLogger('django')
 flag_search=False
 
 
 register = template.Library()
-
+def seeAll(request):
+    logger.debug("IS ON SEall")
+    Notification.objects.filter(isRead=False).update(isRead=True)
+    request.session['seeAll']=True
+    
+    return redirect('requisition-list')
 def cancelRequisition(request):
 
-
+    
     del request.session['books'][-1]
     request.session.modified = True 
     messages.warning(request, f'Livro descartado') 
@@ -48,12 +57,186 @@ def cancelRequisition(request):
 
     return redirect('requisition-confirm')
 
+def insertIsbn(request):
+    if request.GET.get('ISBN'):
+        isbn=request.GET.get('ISBN')
+
+    
+
+        if validateIsbn(isbn)==True:
+            book=livro()
+            authors=[]
+            book.getBookByIsbn(isbn)
+            print("livro-----------")
+            book=book.getBook()
+            print(book['Autor'])
+            for author in book['Autor']:
+                str=author['firstName']+" "+author['lastName']
+                print(str)
+                if not Author.objects.filter(name=str):
+                    
+                    
+                    
+                    newAuthor=Author(name=str,deathYear=0,birthYear=author['birthDate'])
+                    newAuthor.save()
+                    authors.append(newAuthor.pk)
+                    request.session['authors']=authors
+
+                    print("nao existe autor")
+                else:
+                    authors.append(Author.objects.get(name=str).pk)
+                    
+                    request.session['authors']=authors
+
+            if not Publisher.objects.filter(name=book['Editora']).exists():
+                newPublisher=Publisher(name=book['Editora'])
+                newPublisher.save()
+                
+                
+                request.session['publisher']=newPublisher.pk
+            else:
+                request.session['publisher']=Publisher.objects.get(name=book['Editora']).pk
+            request.session['title']=book['Titulo']
+            request.session['year']=book['Ano']
+            request.session['classification']=book['Etiqueta']
+            request.session['colection']=book['Colecção']
+            request.session['isbn']=isbn
+            
+            
+            return redirect('create-book')
+            messages.success(request,f'ISBN válido')
+        else:
+            messages.warning(request, f'ISBN inválido') 
+    return render(request,'library/inserir.html')
+def insertManual(request):
+    request.session['insert-mode']=True
+    return redirect('create-publisher')
+
+class PublisherCreateView(CreateView):
+    model=Publisher
+    form_class=PublisherCreateForm
+    def form_valid(self, form):
+    
+        
+        print("form_valid-----------Publisher")
+        #logging.debug(Requisition.objects.get(pk=1).state)
+        if Publisher.objects.filter(name=form.cleaned_data['name']):
+
+
+            self.request.session['publisher']=Publisher.objects.filter(name=form.cleaned_data['name']).first().pk
+            
+            return redirect('create-author')
+
+
+        self.object = form.save()
+        if self.request.session.get('insert-mode')!=None:
+
+            self.request.session['publisher']=self.object.pk
+            print(self.object.pk)
+            print("pk----------------------")
+            return redirect('create-author')
+        return redirect('camoes-home')    
+class AuthorCreateView(CreateView):
+    model=Author
+    form_class=AuthorCreateForm
+    def form_valid(self, form):
+        authors=[]
+        if 'authors' in self.request.session:
+            print("dfdf")
+            for author in self.request.session['authors']:
+                tempAuthor=deepcopy(author)
+                authors.append(tempAuthor)  
+
+        print("form_valid-----------Author")
+        print(self.request.POST.get('insertMore'))
+
+        #logging.debug(Requisition.objects.get(pk=1).state)
+        
+        if Author.objects.filter(name=form.cleaned_data['name']):
+            authors.append(Author.objects.filter(name=form.cleaned_data['name']).first().pk)
+
+            if self.request.POST.get('insertMore') == "True":
+                self.request.session['authors']=authors
+                return redirect('create-author')
+            elif self.request.session.get('insert-mode')!=None:
+                self.request.session['authors']=authors
+                return redirect('create-book')
+            else:
+                return redirect('camoes-home')
+
+
+        self.object = form.save()
+
+       
+
+        if self.request.session.get('insert-mode')!=None:
+
+
+            authors.append(self.object.pk)
+            self.request.session['authors']=authors
+            if self.request.POST.get('insertMore') == "True":
+                return redirect('create-author')
+
+            return redirect('create-book')
+
+        
+        
+
+        return redirect('camoes-home')
+
+class InsertIsbnView(TemplateView):
+    template_name = 'library/inserir.html'
+
+    # isbn=self.request.Get.get('ISBN')
+    # print('ISBN-----------------------------------')
+    # print(isbn)
+class BookCreateView(CreateView):
+    model=Book
+    form_class=BookCreateForm
+    def get_context_data(self, **kwargs):
+        print('----------------------autores')
+        print(self.request.session.get('authors'))
+        context = super(BookCreateView, self).get_context_data(**kwargs)
+        context['form']=BookCreateForm
+        context['form']= BookCreateForm(initial={'title': self.request.session.get('title'),
+                                                'year': self.request.session.get('year'),
+                                                'classification': self.request.session.get('classification'),
+                                                'isbn': self.request.session.get('isbn'),
+                                                'publisher': self.request.session.get('publisher'),
+                                                'authors': self.request.session.get('authors')
+
+        })  
+        print(self.request.session.get('authors'))
+        return context
+    
+    def form_valid(self, form):
+        print("form_valid-----------Book")
+        #logging.debug(Requisition.objects.get(pk=1).state)
+        
+        
+        
+
+        self.object = form.save()
+        #print(self.request.session['insert-mode'])
+        if 'insert-mode' not in self.request.session:
+            del self.request.session['title']
+            del self.request.session['year']
+            del self.request.session['classification']
+            del self.request.session['colection']
+            del self.request.session['isbn']
+        else:   
+            del self.request.session['insert-mode']
+        del self.request.session['publisher']
+        del self.request.session['authors']
+        return redirect('camoes-home')
+    
 class RequisitionUpdateView(UpdateView):
     model = Requisition
     fields = ['state']
     template_name_suffix = '/requisition-update'
     def form_valid(self, form):
         self.object = form.save()
+        Book.objects.filter(pk=self.object.book.pk).update(status='Available')
         messages.success(self.request, f'Livro Entregue')
 
         return redirect('requisition-list')
@@ -69,7 +252,38 @@ class RequisitionListView(ListView):
     context_object_name='requisitions'
     
     paginate_by=5
+    def get_queryset(self):
+        self.request.GET._mutable = True
+        queryset=Requisition.objects.all()
+        search=self.request.GET.get('search')
+        filter=self.request.GET.get('filter')
+        self.request.session['filter']=filter
+        if search:
+            if User.objects.filter(username=search).exists():
+                user=User.objects.get(username=search)
+                queryset=Requisition.objects.filter(user=user)
+                return queryset
+                
+            else:
+                messages.warning(self.request , 'Não é um utilizador válido !')
+                
+        if 'seeAll' in self.request.session:
+            self.request.GET['filter'] = 'Delayed'
+            del self.request.session['seeAll']
+            filter='Delayed'
+            
+
+  
+        if filter=='All' or not filter:
+            return queryset
+        else:
+            queryset=Requisition.objects.filter(state=filter)
+            return queryset
     
+
+        
+        
+            
 class RequisitionCreateView(CreateView):
     model = Requisition
     
@@ -117,17 +331,19 @@ class RequisitionCreateView(CreateView):
     def get_context_data(self, **kwargs):
         
         context = super(RequisitionCreateView, self).get_context_data(**kwargs)
-        user=self.request.session.get('user')
-        
+        user1=self.request.session.get('user')
+        print("user........"+user1)
 
          
         book=self.request.session.get('books')[-1]
+
+        print(Book.objects.filter(title=book))
         selectedBook=Book.objects.get(title=book)
-        selectedUser=User.objects.get(username=user)
+        selectedUser=Profile.objects.get(number=user1)
         
         context={'book':selectedBook, 'user':selectedUser,'end':self.add_days()}
         context['form']=RequisitionCreateForm
-        context['form']= RequisitionCreateForm(initial={'book': selectedBook.pk, 'user':selectedUser.pk})
+        context['form']= RequisitionCreateForm(initial={'book': selectedBook.pk, 'user':selectedUser.user.pk})
 
         #context['form'].fields['book'].initial = selectedBook.pk
         
@@ -160,7 +376,7 @@ class RequisitionView(TemplateView):
 
         
         context = super(RequisitionView, self).get_context_data(**kwargs)
-        
+        control=False
        
         #checkedBooks=context['checkedBooks']
         #logging.debug(context)
@@ -179,11 +395,14 @@ class RequisitionView(TemplateView):
         #logging.debug(checkedBooks)
         
         if query:
-            if User.objects.filter(username=query).exists():
+            userSelected=Profile.objects.get(number=query).user
+            requisitionCount=Requisition.objects.filter(user=userSelected).count()
+            print(requisitionCount)
+            if Profile.objects.filter(number=query).exists() and requisitionCount<=3:
                 if query and not booksQuery:
                     messages.success(self.request , f'{query} é um utilizador válido !')
                 context.update({
-                    'id':query
+                    'id':Profile.objects.get(number=query)
                 })
 
             else:
@@ -192,17 +411,32 @@ class RequisitionView(TemplateView):
                messages.warning(self.request, f'Tem que indicar um utilizador')
 
         if 'id' in context:
-            if booksQuery:
+            if booksQuery :
                 if Book.objects.filter(title=booksQuery[-1]).exists():
+                    if Book.objects.get(title=booksQuery[-1]).status!="Unavailable":
+                        control=True
+                    else:
+                        control=False
+                if Book.objects.filter(title=booksQuery[-1]).exists() and control and requisitionCount+lengh<=3:
+                    
                     checkedBooks.append(Book.objects.get(title=booksQuery[-1]))
-                    #logging.debug(checkedBooks)
+                    
+                    
 
                     context.update({
                         'checkedBooks':checkedBooks
                 })
                     messages.success(self.request, f'Livro Válido')
                 else:
-                    messages.warning(self.request, f'Livro inválido')
+
+                    print(booksQuery)
+
+                    if requisitionCount>=3:
+                        messages.warning(self.request, f'Atingiu o numero máximo de requisições')
+                    elif Book.objects.get(title=booksQuery[-1]).status=="Unavailable":
+                        messages.warning(self.request, f'Livro indisponivel de momento')
+                    else:
+                        messages.warning(self.request, f'Livro inválido')
                     
                     context.update({
                         'checkedBooks':checkedBooks
@@ -269,7 +503,9 @@ class BookListView(ListView):
         
         
         notifications=Notification.objects.all()
+        booksdel=Book.objects.all()
 
+        
         context = super(BookListView, self).get_context_data(**kwargs)
         query=self.request.GET.get('q')
         filters=self.request.GET.getlist('checkEditora')
@@ -375,16 +611,16 @@ class BookListView(ListView):
 
         if filters or filtersAuthor or filtersYear :
             if filtersAuthor:
-                filtersAuthordict={'authors__name__in':[]}
+                filtersAuthordict={'authors__pk__in':[]}
                 for filter in filtersAuthor:
-                    filtersAuthordict['authors__name__in'].append(filter)
+                    filtersAuthordict['authors__pk__in'].append(filter)
                 books=books.filter(**filtersAuthordict )
                 #logging.debug(books)
             if filters:
-                filterdict={'publisher__name__in':[]}
+                filterdict={'publisher__pk__in':[]}
                 #logging.debug(books)
                 for filter in filters:
-                    filterdict['publisher__name__in'].append(filter) 
+                    filterdict['publisher__pk__in'].append(filter) 
                     #logging.debug("-------------------------")
 
                     #logging.debug(filterdict)

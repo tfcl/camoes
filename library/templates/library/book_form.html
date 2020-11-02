@@ -1,0 +1,45 @@
+{%extends "library/base.html"%}
+{% load my_tags %}  
+{%block content %}  
+    <title>Confimar</title>
+  </head>
+  <form method="post">{% csrf_token %}
+    {{form.as_p}}
+    <input type="submit" >
+  </form>
+  <body>
+    <div class="container">
+    <h1 >Confirmar Livro</h1>
+   <form>
+    <div class="form-inline pb-1">
+   
+    <label for="Titulo"style="width: 200px;" >Titulo:     </label>
+    <input type="text" name="ISBN" class="form-control" id="Titulo" Value="Poemas Negreiros" required><BUTTON class="btn btn-danger">Editar Campo <i class="fas fa-edit"></i></BUTTON>
+  </div>
+   <div class="form-inline pb-1">
+   
+    <label for="Autor" style="width: 200px;">Autor:      </label>
+    <input type="text" name="ISBN" class="form-control" id="Titulo" value="Almada, 1893-1970" required><BUTTON class="btn btn-danger">Editar Campo <i class="fas fa-edit"></i></BUTTON>
+  </div>
+  <div class="form-inline pb-1">
+   
+   <label for="Ano"style="width: 200px;">Ano de Edição:    </label>
+    <input type="text" name="Ano" class="form-control" id="Titulo" value="2001" required><BUTTON class="btn btn-danger">Editar Campo <i class="fas fa-edit"></i></BUTTON>
+</div>
+<div class="form-inline pb-1">
+    <label for="Editora"style="width: 200px;">Editora:    </label>
+    <input type="text" name="ISBN" class="form-control" id="Titulo" value="Assírio & Alvim 2001" required><BUTTON class="btn btn-danger">Editar Campo <i class="fas fa-edit"></i></BUTTON>
+  </div>
+
+  
+  <div class="form-inline pb-1">
+   
+    <label for="Titulo"style="width: 200px;">Catalogação:</label>
+    <input type="text" name="ISBN" class="form-control" id="Titulo" value="821.134.3-1""19"" BN por" required><BUTTON class="btn btn-danger">Editar Campo <i class="fas fa-edit"></i></BUTTON>
+  </div>
+  <button class="btn btn-primary">Confirmar</button>
+  <form method="post">{% csrf_token %}
+    {{ form.title}}
+    <input type="submit" >
+  </form>
+{% endblock content%}

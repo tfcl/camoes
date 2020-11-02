@@ -1,0 +1,17 @@
+{%extends "library/base.html"%}
+{% load my_tags %}  
+{%block content %}  
+  <body>
+    <div class="container">
+    <h1>Inserir Livro</h1>
+   <form>
+    <div class="form-group">
+    <label for="isbnInput">Inserir ISBN:</label>
+    <input type="text" name="ISBN" class="form-control" id="isbnInput" placeholder="Exemplo: 972-21-1585-5" required> 
+  <input type="submit" class="btn btn-primary mt-2" value="Inserir">
+  <a class="btn btn-primary mt-2" href="{% url 'insert-manual'%}">Inserir Manualmente</a>
+  <div class="form-group">
+  </form>
+
+    </div>
+{% endblock content%}

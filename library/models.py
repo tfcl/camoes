@@ -13,12 +13,16 @@ import json
 class Publisher(models.Model):
     name=models.CharField(max_length=100)
     adress=models.CharField(max_length=100)
-
-
+    @classmethod
+    def create(cls, name):
+        publisher = cls(name=name)
+        # do something with the book
+        return publisher
 class Author(models.Model):
+  
     name=models.CharField(max_length=100)
-    deathYear=models.IntegerField()
-    birthYear=models.IntegerField()
+    deathYear=models.IntegerField(blank=True, null=True)
+    birthYear=models.IntegerField(blank=True, null=True)
 
 class Book(models.Model):
     title=models.CharField(max_length=100)
@@ -54,19 +58,33 @@ class Requisition(models.Model):
 
 class Notification(models.Model):
     subject=models.CharField(max_length=100)
-    message=models.CharField(max_length=100)
     creationDate=models.DateTimeField(default=timezone.now)
     isRead=models.BooleanField(default=False)
     requisition=models.ForeignKey(Requisition, on_delete=models.CASCADE)
-
+    print(requisition)
+    #requisitionInstance=Requisition.objects.get(id=requisition)
+    message=models.CharField(max_length=100)
+    #message=models.CharField(max_length=100,default="O Livro"+requisitionInstance.book.title+"requisitado por"+requisitionInstance.user.username+"está atrasado")
+    def save(self, *args, **kwargs):
+        self.message="O Livro "+self.requisition.book.title+" requisitado por "+self.requisition.user.username+" está atrasado"
+        
+        super(Notification, self).save(*args, **kwargs)
+        print(self.message)
 def save_post(sender, instance ,**kwargs):
     
     # instance.isRead=True
-    # instance.save()
-  
+    # message="O Livro"+instance.requisition.book.title+"requisitado por"+instance.requisition.user.username+"está atrasado"
+    # print(message)
+    # instance.message=message
+    # instance.save(update_fields=['message'])
+
+
     channel_layer = channels.layers.get_channel_layer()
+    subjectJs=instance.subject
+    messageJs=instance.message
+    requisitionJs=instance.requisition.pk
     message={"requisition":instance.requisition.book.title}
-    message1={"notification":[instance.subject, instance.pk, instance.requisition.pk]}
+    message1={"notification":[instance.subject, instance.message,  instance.pk, instance.requisition.pk]}
     #print(message)
     # await channel_layer.send( {
     # "type": "message",
@@ -74,7 +92,7 @@ def save_post(sender, instance ,**kwargs):
     # })
     async_to_sync(channel_layer.group_send)(
     'notification',
-    {'type': 'websocket_message', 'message':json.dumps({'requisition':message['requisition'], 'instance':message1['notification']}) 
+    {'type': 'websocket_message','message':json.dumps({'message':messageJs, 'subject':subjectJs,'requisition':requisitionJs}) 
     })
     #
     # async_to_sync(channel_layer.send)("channel_name",{'type': 'library.websocket_message', 'message':'hello from signals1111111',})

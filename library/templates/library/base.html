@@ -29,14 +29,37 @@
             + '/'
         );
         socket.onmessage = function(e){
+          var optionSubject = document.createElement("a");
+          var options = document.createElement("a");
           var data = JSON.parse(e.data);
+          for(var key in data){
+            if (data.hasOwnProperty(key)){
+                var value=data[key];
+                if (key=="message"){
+                  string=value;
+                  
+                }
+                if (key=="subject"){
+                  string=string+" <br> "+value;
+                  optionSubject.text=value;
+                  console.log(string);
+                  options.text=string;
+                }
+                // work with key and value
+            }
+        }
           
           var dropdown = document.getElementById("notifications");
-          var options = document.createElement("a");
-          options.text=data.requisition;
+          
           options.classList.add("dropdown-item");
+          optionSubject.classList.add("dropdown-item");
+
           options.style.color="black"
+          dropdown.appendChild(optionSubject);
+
           dropdown.appendChild(options);
+          elem = document.createElement("hr");
+          dropdown.appendChild(elem);
           console.log("message",e)
         }
         socket.onopen = function(e){
@@ -90,12 +113,23 @@
         <i class="fas fa-bell"></i>
       </button>
       
+      
         <div id="notifications"class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton" style="width: 400px;">
           <div class="">
-            <div class="m-2">Notificações (<b>2</b>)</div>
+          <div style= "display:inline-block">
+            <p class="m-2"  >Notificações (<b>2</b>)</p>
+          </div>
+          <div style= "display:inline-block">
+
+            <a href="{%url 'see-all'%}"class="btn btn-danger dropdown-item" >Ver todas   <i class="far fa-eye"style="color:gray"></i></a>
+          </div>
+          
+
+          </div>
             <hr>
           </div>
-          <a href="#" class="dropdown-item">Link 1</a>
+          
+          
         
       </div>
       

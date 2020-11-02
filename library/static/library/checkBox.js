@@ -37,6 +37,21 @@ function myFunction(){
     
     form.submit();
 }
+
+function insertMore(){
+    var input = document.createElement("input");
+
+    input.setAttribute("type", "hidden");
+
+    input.setAttribute("name", "insertMore");
+
+    input.setAttribute("value", "True");
+
+    //append to form element that you want .
+    document.getElementById('form-author').appendChild(input);
+    document.getElementById('form-author').submit();
+
+}
 function deleteBook(){
 
     

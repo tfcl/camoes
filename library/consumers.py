@@ -31,15 +31,20 @@ class notificationConsumer(WebsocketConsumer):
 
         for notification in Notification.objects.filter(isRead=False):
             self.send(text_data=json.dumps({
-            'message': notification.subject
+            'message': notification.message,
+            'subject':notification.subject,
+            'requisition':notification.requisition.pk
         }))
         
 
         
-
-        self.send(text_data=json.dumps({
-            'message': "Hello from consumer"
-        }))
+        # message={'message': "Hello from consumer",
+        #         'subject':"this is a subject",
+        #         'requisition':"this is a requisition"
+        #     }
+        # self.send(text_data=json.dumps(
+        #     message
+        # ))
         # Or accept the connection and specify a chosen subprotocol.
         # A list of subprotocols specified by the connecting client
         # will be available in self.scope['subprotocols']
@@ -51,9 +56,9 @@ class notificationConsumer(WebsocketConsumer):
 
         print("messageTest",event)
 
-        self.send(text_data=json.dumps({
-            'message': message
-        }))
+        self.send(text_data=
+            message
+        )
 
     def websocket_receive(self,event ):
         print("receive",event)
