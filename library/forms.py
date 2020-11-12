@@ -1,12 +1,8 @@
 
-from .models import Requisition,Book,Author,Publisher
+from .models import Book,Author,Publisher
 from django import forms
 
 
-class RequisitionCreateForm(forms.ModelForm):
-    class Meta:
-        fields = ('book','user',)
-        model = Requisition
 
 class BookCreateForm(forms.ModelForm):
     class Meta:

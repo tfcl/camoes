@@ -42,6 +42,7 @@ EMAIL_HOST_PASSWORD ='Quinta5224!'
 
 INSTALLED_APPS = [
 
+    'requisition.apps.RequisitionConfig',
     'channels',
     'django_celery_results',
     'library.apps.LibraryConfig',

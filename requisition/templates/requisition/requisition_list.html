@@ -1,0 +1,249 @@
+
+{%extends "library/base.html"%}
+{% load my_tags %}  
+{%block content %}  
+<style>
+
+.headerUser{ grid-area: headerUser ;}
+.header{ grid-area: header ;}
+.headerAux{ grid-area: headerAux ;}
+.menu{ grid-area: menu ;}
+.main1{ grid-area: main ;}
+
+
+.card-title{grid-area:card-title;}
+.card-image{grid-area:card-image;}
+.card-main-left{grid-area:card-main-left;}
+.card-main-right{grid-area:card-main-right;}
+
+
+
+
+.grid-container{
+  display: grid;
+  grid-template-columns:200px;
+  grid-template-areas: 
+    'headerUser header header header header headerAux' 
+    'menu main main main main main ' 
+  ;
+
+}
+.grid-card-container{
+  display: grid;
+  grid-template-areas: 
+    'card-image card-title card-title card-title card-title'
+    'card-image card-main-left card-main-left card-main-right card-main-right'
+
+
+}
+.grid-container .headerUser{
+  
+}
+.grid-container .menu {
+  border-color: rgb(236, 234, 234);
+  max-width: 200px;
+}
+
+.grid-card-container{
+  padding: 1px;
+  grid-template-columns:200px;
+  
+}
+
+.grid-card-container .card-image{
+  background-color: rgb(249, 248, 248);
+  width: 200px;
+}
+</style>
+<form id="filter"  method="GET">
+<div class=" m-2 ">
+<div class="grid-container">
+  <div class="headerUser">
+    <div class="input-group md-form form-sm form-2 pt-2 pb-2 pl-0 input-group-prepend "  >
+    
+      <span class="btn text-grey pl-0 pr-1 "style="font-weight:bold ;display:inline-block; color:#b30000; font-size:20px">Requisições<i class="fas fa-book-reader ml-2"></i> </span>
+    </div>
+
+  </div>
+  <div class="header" style="margin-left: 15px;">
+
+
+    <div class="input-group md-form form-sm form-2 pt-2 pb-2 pl-0 input-group-prepend " style="width: 60%;" >
+      <span class="btn text-grey pl-0 pr-1 "style="font-weight:bold ;display:inline-block; color:#b30000">Ordenar por: </span>
+      <div class="dropdown show mr-3" style="border-style: solid;height: 38px; border-width:1px; border-color: #ced4da;display:inline-block">
+        
+        <a class="btn dropdown-toggle" href="#" role="button" id="dropdownMenuLink" style="color:#939393; font-weight: 600" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+       
+          {%if orderBy == "recent"%}
+          Recentes
+          {%else%}
+          Antigos
+          {%endif%}
+        </a>
+      
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+          <button class="dropdown-item" name="orderby" value="recent">Recentes</button>
+          <div class="dropdown-divider"></div>
+          <button class="dropdown-item" name="orderby" value="old">Antigas</button>
+          
+          
+          
+  
+        </div>
+      </div>
+      <input class="form-control my-0 py-1 red-border" type="text" placeholder="Pesquisar utilizador por nº de aluno ou email" value="{{searchUser.number}}" name='search' aria-label="Search">
+      <div class="input-group-append">
+        <span style="background-color:#b30000; color:white" class="input-group-text red lighten-3" id="basic-text1"><i class="fas fa-search text-grey"
+            aria-hidden="true"></i></span>
+      </div>
+
+
+    </div>
+    {% if searchUser %}
+    <span class="btn text-grey pl-0 pr-1 "style="font-weight:bold ;display:inline-block; color:#b30000">  Utilizador: <span style="color:#939393">{{searchUser.user.username}}</span> </span>
+    <a href="#"><span class="btn text-grey pl-0 pr-1 "style="font-weight:bold ;display:inline-block; color:#b30000"><i class="fas fa-window-close"></i></span></a>
+    {%endif%}
+
+  </div>
+  <div class="headerAux">
+    <a class="float-right pt-2" href="" style="vertical-align: middle; font-size:18px" ><span style="font-weight: 600 ;color: #939393;">Criar Novo </span><span class="font-weight-bold"style="color:#b30000 ;"><i class="fas fa-plus"></i></span> </a>
+    
+  </div>
+
+  <div class="menu border">
+    <div class="pl-2  " style="width: 100%; background-color: rgb(236, 234, 234);">
+      <p class="font-weight-bold pb-1 mb-1">Filtar por:</p>
+      </div>
+  <div class="pl-2 ">
+    <ul class="list-group">
+      <label><input type="checkbox"  class="checkbox" name="filter" id="check" value ="d" onclick="filterRequisitions()"/> Atrasados</label>
+      </ul>
+      <ul class="list-group">
+      <label><input type="checkbox"  class="checkbox" name="filter" id="check" value ="og" onclick="filterRequisitions()"/> Por Entregar</label>
+    </ul>
+    <ul class="list-group">
+      <label><input type="checkbox"  class="checkbox" name="filter" id="check" value ="f" onclick="filterRequisitions()"/> Entregues</label>
+    </ul>
+    <ul class="" style="padding-left: 18px;">
+      <a href="#" onclick="clearCheckboxs()">Limpar</a>
+    </ul>
+  </div>
+    
+  </div>  
+  <div class="main1" style="margin-left: 15px;">
+
+  </form>
+  {%for requisition in requisitions%}
+      <div class="grid-card-container border border-danger card mb-3" style="height: 268px;">
+        <div class="card-title mb-0"><h4 class=" ml-3 mt-3 font-weight-bold mb-0 pt-1" style="color: #b30000;">{{requisition.book.title}}</h4></div>
+        <div class="card-image"style="height: 265px; ">
+          
+          <span style="left: 13%; font-size: 25px;color: #b30000; position:absolute;" class=" pr-2 pt-2" >
+            
+            
+              {% if requisition.state|stringformat:"s" == 'Delivered' %}
+               </span>
+              {%elif requisition.state|stringformat:"s" == 'Not Delivered' %}
+              <i class="fas fa-ellipsis-h"></i></span>
+              {%elif requisition.state|stringformat:"s" == 'Delayed' %}
+              <i class="fas fa-exclamation-circle"></i></span>
+
+          
+              {%endif%}
+          <div style="display: table; margin: auto;width: 100%; height:100%;">
+          <div style=" margin:auto;display: table-cell;text-align: center; vertical-align: middle;">  
+            <h5 style="font-weight: bold;margin: 0; margin-bottom: 5px;" >Estado</h5>
+            
+            
+            {%ifequal requisition.state 'Not Delivered'%}
+            <p style="color: #b30000;font-weight: bold; font-size: large;" >Não Entregue</p style="color: #b30000;">
+              {%endifequal%}
+              {%ifequal requisition.state 'Delivered' %}
+            <p style="color: #b30000;font-weight: bold; font-size: large;" >Entregue</p style="color: #b30000;">  
+        
+        
+            {%endifequal%} 
+            {%ifequal requisition.state 'Delayed' %}
+            <p style="color: #b30000;font-weight: bold; font-size: large;" >Atrasado</p style="color: #b30000;">  
+        
+        
+            {%endifequal%}   
+            
+
+
+          </div>
+        </div>
+        </div>
+        <div class="card-main-left">
+          <table class="table table-borderless " >
+            <tr style="border-bottom: 1px solid rgb(241, 200, 200);">
+                <th class="text-right row-width" scope="row">Nº do Aluno:</th>
+                <td >{{requisition.user.username}}</th>
+    
+            </tr>
+            
+            <tr style="border-bottom: 1px solid rgb(241, 200, 200);">
+                <th class="text-right row-width" scope="row">Data de Requisição:</th>
+                <td >{{requisition.date}}</th>
+    
+            </tr>
+            <tr style="">
+              <th class="text-right row-width" scope="row">Data Limite:</th>
+              <td >{{requisition.end_date}}</th>
+  
+          </tr>
+        </table>
+        </div>
+        <div class="card-main-right" style="display: table;">
+          <div style=" margin:auto;display: table-cell;text-align: center;
+          vertical-align: middle;">
+            <a href="{%url 'detail-requisition' requisition.pk %} " class="btn-block mb-2 btn btn-danger" style="color:white ;width: 40%; margin:auto">Detalhes</a>
+            {%ifequal requisition.state 'Delayed'%}
+            <a href="{% url 'update-requisition' requisition.pk  %}" class="btn-block mt-2 btn btn-danger" style="color:white; width: 40%; margin:auto">Entregar</a>
+            {%endifequal%}
+            {%ifequal requisition.state 'Not Delivered'%}
+            <a href="{% url 'update-requisition' requisition.pk %}" class="btn-block mt-2 btn btn-danger" style="color:white; width: 40%; margin:auto">Entregar</a>
+            {%endifequal%}
+          </div>
+        </div>
+
+
+
+      </div>
+          {%empty%}
+              <div style=text-align:center>
+                <h1>Não foram encontrados resultados</h1>
+                <a class="btn btn-danger "style="margin:70px auto; display:block;width:140px  " href="{%url 'camoes-home'%}">Voltar Atrás</a>
+              </div>
+  {%endfor%}
+  {% if is_paginated %}
+  
+  {% if page_obj.has_previous %}
+    <a class="btn btn-outline-danger mb-4" href="?page=1&{%url_replace%}">Primeira</a>
+    <a class="btn btn-outline-danger mb-4" href="?page={{ page_obj.previous_page_number }}&{%url_replace%}"><i class="fas fa-angle-left fa-lg"></i></a>
+  {% endif %}
+  
+  {% for num in page_obj.paginator.page_range %}
+    {% if page_obj.number == num %}
+      <a class="btn btn-danger mb-4" href="?page={{ num }}&{%url_replace%}">{{ num }}</a>
+    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+      <a class="btn btn-outline-danger mb-4" href="?page={{ num }}&{%url_replace%}">{{ num }}</a>
+    {% endif %}
+  {% endfor %}
+  
+  {% if page_obj.has_next %}
+    <a class="btn btn-outline-danger mb-4" href="?page={{ page_obj.next_page_number }}&{%url_replace%}"><i class="fas fa-angle-right fa-lg"></i></a>
+    <a class="btn btn-outline-danger mb-4" href="?page={{ page_obj.paginator.num_pages }}&{%url_replace%}">Última</a>
+  {% endif %}
+  
+  {% endif %}
+  </div>
+  </div>
+  </div>
+
+  </div>
+  
+</div>
+</div>
+{% endblock content%}
+      

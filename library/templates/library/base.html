@@ -85,8 +85,9 @@
     <a href="{%url 'camoes-home'%}" class="navbar-brand mr-5"><img src="{% static 'library/C.png' %}" width="50" height="50" alt=""> </a>
     <div class="navbar-nav">
       
-      <a class="nav-item nav-link" style="text-align:center;max-width: 80px;" href="{%url 'requisition-create'%}">Requisitar<i class="fas fa-book"></i></a>
-      <a class="nav-item nav-link " href="#" style="text-align:center;max-width: 80px;">Gestor <i class="fas fa-cogs"></i></a>
+      <!-- <a class="nav-item nav-link" style="text-align:center;max-width: 80px;" href="">Requisitar<i class="fas fa-book"></i></a> -->
+      <a class="nav-item nav-link " href="{%url 'menu' %}" style="text-align:center;max-width: 80px;">Gestor <i class="fas fa-cogs"></i></a>
+      <a class="nav-item nav-link " href="{%url 'create-requisition' %}" style="text-align:center;max-width: 80px;">Requisitar <i class="fas fa-cogs"></i></a>
       
     </div>
     <div class=" ml-5 container justify-content-start ">

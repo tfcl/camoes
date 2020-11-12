@@ -1,0 +1,111 @@
+{%extends "library/base.html"%}
+{% load my_tags %}  
+{%block content %} 
+
+<style>
+
+div#warning {
+    position: fixed;
+    display: block;
+        color: #b30000;
+    font-size: 30px;
+
+  
+
+}
+
+#warningBack{
+    position: absolute;
+background-color: white;
+    z-index: -1;
+  width: 10px;
+  height: 20px;
+  top: 16px;
+  right:8px;
+
+}
+.item1{ grid-area: item1 ;}
+.item2{ grid-area: item2 ;}
+.item3{ grid-area: item3 ;}
+
+.grid-menu{
+display: grid;
+grid-column-gap: 50px;
+grid-template-columns: auto auto auto;
+width: 700px;
+padding-top: 50px;
+
+
+}
+
+.grid-item {
+    background-color: rgb(236, 234, 234);
+    border: 2px solid #b30000;
+    border-radius:9px;
+    padding: 20px;
+    font-size: 30px;
+    text-align: center;
+    height: 200px;
+    width: 200px;
+    margin-right: 0px;
+}
+
+</style>
+<div>
+
+    {%if requisitions%}
+    <div id="warning"><i class="fas fa-exclamation-circle"></i>
+    <div id="warningBack"> </div>
+    </div>
+    {%endif%}
+<div class="grid-menu" style="margin: auto;">
+    <div class="grid-item">
+        <a href="{%url 'home-user' %}">
+        <div style="width: 100%; height:100% ; display: table;">
+            <div style="margin:auto;display: table-cell;text-align: center; vertical-align: middle;" >
+                <span style="font-size: 65px; color: #b30000;" ><i class="fas fa-users-cog"></i></span>
+                
+            
+               
+                <p style="color:#b30000; font-weight: 600;" class="p-0 m-0">Utilizadores</p>
+            </div>
+        </div>
+    </a>
+    </div>
+
+    <div class="grid-item" id="requisitionButton">
+        
+        <a href="{%url 'requisition-home' %}">
+        <div style="width: 100%; height:100% ; display: table;">
+            <div style="margin:auto;display: table-cell;text-align: center; vertical-align: middle;" >
+                <span style="font-size: 65px; color: #b30000;" ><i class="fas fa-book-reader"></i></span>
+                
+            
+               
+                <p style="color:#b30000; font-weight: 600;" class="p-0 m-0">Requisições</p>
+            </div>
+        </div>
+    </a>
+    </div>
+    <div class="grid-item">
+        <a href="#">
+
+        <div style="width: 100%; height:100% ; display: table;">
+            <div style="margin:auto;display: table-cell;text-align: center; vertical-align: middle;" >
+                <span style="font-size: 65px; color: #b30000;" ><i class="fas fa-book"></i></span>
+                
+            
+               
+                <p style="color:#b30000; font-weight: 600;" class="p-0 m-0">Livros</p>
+            </div>
+        </div>
+    </a>
+
+    </div>
+
+
+
+
+</div>
+</div>
+{% endblock content%}

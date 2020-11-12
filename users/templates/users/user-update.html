@@ -40,12 +40,13 @@
       {% csrf_token %}
       
       
-      {{ form.state.as_hidden }}
+      {{ form.as_p }}
   
       
       <input type="submit" class="btn text-white mt-2" value="Entregar" style="background: #b30000;">
-      <a class="btn text-white mt-2" style="background: #b30000;" href="{% url 'requisition-list'%}">Cancelar</a>
-    </form>    
+      <a class="btn text-white mt-2" style="background: #b30000;" href="{% url 'requisition-home'%}">Cancelar</a>
+    </form> 
+    
     </div>
       
 </div>

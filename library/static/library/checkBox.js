@@ -56,6 +56,15 @@ function deleteBook(){
 
     
 }
+
+function filterRequisitions(){
+    var checkboxs = document.getElementsByClassName('checkbox');
+    var form=document.getElementById('filter');
+
+    form.submit();
+
+
+}
 function getUrlVars() {
     var vars = {};
     var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
@@ -63,6 +72,70 @@ function getUrlVars() {
     });
     return vars;
 }
+
+
+document.addEventListener("DOMContentLoaded", function() {
+    var start;
+    var end;
+    
+    var paramsFilter=[];
+    var checkboxs=document.getElementsByClassName('checkbox');
+    var checked=getUrlVars();
+    url_string=window.location.search;
+    console.log(url_string);
+    while(url_string.search("filter=")!=-1){
+        start=url_string.indexOf("filter");
+        if(url_string.search("&")==-1){
+            
+            end=url_string.length;
+        }
+        else{
+            end=url_string.indexOf("&");
+        }
+        paramsFilter.push(url_string.slice(start+7,end));
+        url_string=url_string.slice(end+1);
+        console.log(paramsFilter);
+    }
+
+    for (i=0 ; i<checkboxs.length;i++ ){
+        for(j=0;j<paramsFilter.length;j++){
+            if(checkboxs[i].value==paramsFilter[j]){
+                checkboxs[i].checked=true;
+           }    
+        }
+    }
+
+
+});
+
+function clearCheckboxs() {
+    var checkboxs=document.getElementsByClassName('checkbox');
+    var form=document.getElementById('filter');
+
+    for (i=0 ; i<checkboxs.length;i++ ){
+        checkboxs[i].checked=false;
+        
+    
+    }
+    form.submit();
+
+}
+document.addEventListener("DOMContentLoaded", function() {
+    var button=document.getElementById('requisitionButton');
+    var nav=document.getElementById('mainNavbar');
+    var warning=document.getElementById('warning');
+    var start= nav.offsetTop+ nav.offsetHeight;
+    var left=button.offsetLeft+button.offsetWidth-15;
+    var top=(button.offsetTop-start)-18;
+    // console.log(left)
+    // console.log(top)
+    warning.style.marginTop=top.toString()+"px"
+    // console.log(top.toString()+"px")
+    warning.style.marginLeft=left.toString()+"px"
+
+
+
+});
 
 document.addEventListener("DOMContentLoaded", function() {
     var checkbox=document.getElementsByClassName('checkbox');
@@ -105,6 +178,7 @@ document.addEventListener("DOMContentLoaded", function() {
         paramsAuthor.push(temp.slice(start+12,end));
         url_string=url_string.slice(end+1);
         console.debug(paramsAuthor)
+    
 
     }
     

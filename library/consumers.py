@@ -4,10 +4,10 @@ from asgiref.sync import async_to_sync, sync_to_async
 from channels.consumer import AsyncConsumer
 import asyncio
 import json
-from .models import Notification
+from requisition.models import Notification
 from channels.db import database_sync_to_async
 import asyncio
-from .notificationLoop import send_Notifications
+
 logger = logging.getLogger('django')
 
 

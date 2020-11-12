@@ -2,6 +2,9 @@ from django.shortcuts import render,redirect
 
 from django.contrib import messages
 from .forms import UserRegisterForm, ProfileCreateForm
+from django.views.generic import ListView, UpdateView
+from django.contrib.auth.models import User
+from .models import Profile
 
 def register(request):
     if request.method=='POST':
@@ -24,3 +27,15 @@ def register(request):
         form = UserRegisterForm()
 
     return render(request, 'users/register.html',{'form':form,'form1':form1})
+
+class UserListView(ListView):
+    model=User
+    template_name='users/user_list.html'
+    context_object_name='users'
+    paginate_by=5
+
+
+class UserUpdateView(UpdateView):
+    model=User
+    fields=['email']
+    template_name='users/user-update.html'

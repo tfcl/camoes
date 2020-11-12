@@ -6,7 +6,7 @@ from celery import shared_task
 from datetime import datetime
 from django.utils import timezone
 from camoes.myScripts import send_mail
-from .models import Requisition, Notification
+from requisition.models import Requisition, Notification
 from django.core.mail import send_mail
 
 
