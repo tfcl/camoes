@@ -47,29 +47,60 @@
         <ul class="list-group  ">
           <li class="list-unstyled">
           <p style="display:inline-block" class="font-weight-bold mb-1">Autor</p>
-          <a onclick="cleanAuthor()"><span class="btn text-grey pl-0 pr-1   "style="font-weight:bold ;display:inline-block; color:#b30000"><i class="fas fa-window-close"></i></span></a>
+          <a id="cleanAuthor"><span class="btn text-grey pl-0 pr-1   "style="font-weight:bold ;display:inline-block; color:#b30000"><i class="fas fa-window-close"></i></span></a>
         </li>
           <form id="filter"  method="GET">
+          {%if search%}
+          <input id=""type="hidden" name="search"value="{{search}}">
+          {%endif%}
+          <input id="seeAuthors"type="hidden" name="seeAuthors"value="{{nShowAuthors}}">
+          {%for author in selectedAuthors%}
+          <div>
+            <label><input type="checkbox"  class="checkbox" name="checkAuthor" id="check" value ="{{author.pk}}" onclick="myFunction()"/> {{author.name}}</label>
+          </div>
+          {%endfor%}
+          {%for author in relatedAuthors%}
+          <div>
+            <label><input type="checkbox"  class="checkbox" name="checkAuthor" id="check" value ="{{author.pk}}" onclick="myFunction()"/> {{author.name}}</label>
+          </div>
+          {%endfor%}
           {%for author in authors %}
             <div>
               <label><input type="checkbox"  class="checkbox" name="checkAuthor" id="check" value ="{{author.pk}}" onclick="myFunction()"/> {{author.name}}</label>
             </div>
           {%endfor%}
           
-          <button id="seeAuthors"class="fake-anchor" type="submit" name="seeAuthor" value="{%add5 %}" onclick="seeAuthors()">Ver mais</button>
+          <a id="seeMoreAuthors" class="fake-anchor" >Ver mais</a>
           
         </ul>
 
         <ul class="list-group">
           <p class="font-weight-bold mb-1 mt-1">Editora</p>
-         
-          {%for publisher in publishers1 %}
-          
+          <input id="seePublishers"type="hidden" name="seePublishers"value="{{nShowPublishers}}">
+
+          {%for publisher in selectedPublishers %}
+              
             <div>
                 <label><input type="checkbox" class="checkbox" name="checkEditora" id="check" value ="{{publisher.pk}}" onclick="myFunction()"/> {{publisher.name}}</label>
             </div>
 
           {%endfor%}
+          {%for publisher in relatedPublishers %}
+
+          <div>
+              <label><input type="checkbox" class="checkbox" name="checkEditora" id="check" value ="{{publisher.pk}}" onclick="myFunction()"/> {{publisher.name}}</label>
+          </div>
+
+        {%endfor%}
+          {%for publisher in publishers %}
+
+            <div>
+                <label><input type="checkbox" class="checkbox" name="checkEditora" id="check" value ="{{publisher.pk}}" onclick="myFunction()"/> {{publisher.name}}</label>
+            </div>
+
+          {%endfor%}
+          <a id="seeMorePublishers" class="fake-anchor" >Ver mais</a>
+
           {% if 'q' in request.GET %}
           <input type="hidden"  name="q" value={%get_search%}>
           {%endif%} 
@@ -116,6 +147,8 @@
                 <h7 class="card-text mb-2 text-muted ">{{book.publisher.name}}, {{book.year}}</h7>
                
                 <h6 class="card-text mb-2 text-muted ">{{book.classification}}</h6>
+                <h6 class="card-text mb-2 text-muted ">{{book.category}}</h6>
+
 
               </div>
               
@@ -154,4 +187,65 @@
       {% endif %}
     </div>
   </div>
+
+
+  <form method="GET" id="auxForm">
+
+  </form>
+
+
+
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+<script>
+console.log("hello from index")
+
+
+$(document).on('click','#cleanAuthor', function(e){
+
+  $("#seeAuthors").val("");
+  $("#filter").submit();
+
+
+
+});
+
+$(document).on('click','#search-button', function(e){
+
+
+  console.log("search button")
+
+  var search=$("#searchInput").val();
+  $("#filter").append('<input type="hidden"  name="search" value="'+search+'">');
+  $("#filter").submit();
+
+});
+
+
+
+$(document).on('click','#seeMoreAuthors', function(e){
+  
+  
+  seeAuthors={{nShowAuthors}}+5;
+
+  $("#seeAuthors").val(seeAuthors);
+  
+  $("#filter").submit();
+  //$.get("{% url 'camoes-home' %}", { seeAuthors:seeAuthors+5 } );
+  //window.location.reload()
+
+});
+
+$(document).on('click','#seeMorePublishers', function(e){
+  seePublishers={{nShowPublishers}}+5;
+
+  $("#seePublishers").val(seePublishers);
+  
+  $("#filter").submit();
+
+
+});
+
+</script>
 {% endblock content%}

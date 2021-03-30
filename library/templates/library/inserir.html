@@ -1,17 +1,115 @@
 {%extends "library/base.html"%}
 {% load my_tags %}  
 {%block content %}  
-  <body>
-    <div class="container">
-    <h1>Inserir Livro</h1>
-   <form>
-    <div class="form-group">
-    <label for="isbnInput">Inserir ISBN:</label>
-    <input type="text" name="ISBN" class="form-control" id="isbnInput" placeholder="Exemplo: 972-21-1585-5" required> 
-  <input type="submit" class="btn btn-primary mt-2" value="Inserir">
-  <a class="btn btn-primary mt-2" href="{% url 'insert-manual'%}">Inserir Manualmente</a>
-  <div class="form-group">
-  </form>
 
+<body>
+<div id="main-div" class="container">
+<h1 class="title">Inserir Livro</h1>
+ 
+
+
+
+    <div id="form-isbn" class="ml-2 form-group row">
+      <label class="col-form-label" for="isbnInput">Inserir ISBN:</label>
+      <div class="col-sm-11">
+        <input type="text" name="ISBN" class="form-control" id="isbnInput" placeholder="Exemplo: 972-21-1585-5" required> 
+      </div>
     </div>
+
+
+
+
+
+  <div style="display: flex; justify-content: center;">
+    <a class="btn  btn-normal mr-1" style="width:172px"id="search-isbn" >Inserir</a>
+    <a  class="btn  btn-normal ml-1" id="insert-manual"  >Inserir Manualmente</a>
+  </div>
+
+
+
+
+ 
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+<script>
+
+
+$(document).on('click','#insert-manual', function(e){
+  ajaxManualInsert();
+
+
+});
+
+$(document).on('click','#search-isbn', function(e){
+  $("div").remove(".warning-display");
+  var isbn=$("#isbnInput").val()
+  if(isbn!==""){
+
+    ajaxGETisbn(isbn);
+
+  }
+  else{
+
+        $('#form-isbn').prepend('<div class="warning-display m-0" ><p>O campo é obrigatório</p></div>');
+
+  }
+
+});
+
+
+
+function ajaxManualInsert(){
+  $.ajax({
+    type: 'GET',
+          url: "{% url 'insert-isbn' %}",
+          data:{ ISBN:-1},
+
+    success: function(data){
+
+        console.log(data);
+        $("#main-div").empty();
+        $("#main-div").append(data);
+
+        
+      }
+    });
+
+
+}
+
+function ajaxGETisbn(dataToSend){
+
+
+ $.ajax({
+    type: 'GET',
+          url: "{% url 'insert-isbn' %}",
+          data:{ ISBN:dataToSend},
+
+    success: function(data){
+
+      if (data==-1){
+        //console.log("isbn errado")
+        $('#form-isbn').prepend('<div class="warning-display m-0" ><p>ISBN no formato errado</p></div>');
+
+
+      }
+    
+      else{
+        console.log(data);
+        $("#main-div").empty();
+        $("#main-div").append(data);
+      }
+    }});
+
+
+
+}
+
+
+
+</script>
+
 {% endblock content%}

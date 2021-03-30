@@ -1,0 +1,100 @@
+{%extends "library/base.html"%}
+{% load my_tags %}  
+{%block content %}  
+
+<form method="post" id="bookForm" data-categories-url="{%url 'ajax-load-categories'%}">{% csrf_token %}
+
+
+
+
+<div class="container">
+  <h1 >Confirmar Livro</h1>
+
+  <div class="form-inline pb-1">
+
+    <label for="Titulo"style="width: 200px;" >Titulo:     </label>
+    {{form.title}}
+
+  </div>
+<div class="form-inline pb-1">
+
+  <label for="Autor" style="width: 200px;">Autor:      </label>
+  {{form.authors}}
+
+
+</div>
+<div class="form-inline pb-1">
+
+  <label for="Autor" style="width: 200px;">Isbn:      </label>
+  {{form.isbn}}
+
+</div>
+<div class="form-inline pb-1">
+
+  <label for="Autor" style="width: 200px;">classifds:      </label>
+  {{form.classification}}
+
+</div>
+<div class="form-inline pb-1">
+
+  <label for="Ano"style="width: 200px;">Ano de Edição:    </label>
+  {{form.year}}
+
+</div>
+<div class="form-inline pb-1">
+  <label for="Editora"style="width: 200px;">Editora:    </label>
+  {{form.publisher}}
+
+</div>
+
+
+<div class="form-inline pb-1">
+
+  <label for="Ano"style="width: 200px;">Categoria:    </label>
+
+  <select name="" id="id_category1" class="categories-drop">
+    {%for category in categories%}
+    <option value="{{category.pk}}">{{ category}}</option>
+    {%endfor%}
+
+  </select>
+</div>
+
+<input type="checkbox" class="categories-drop">
+<div id="teste"></div>
+  <div class="form-inline pb-1">
+
+    <label for="Titulo"style="width: 200px;">Catalogação:</label>
+
+  </div>
+{{form.category.as_hidden}}
+<input type="submit" class="btn btn-primary">
+</form>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script>
+
+
+$(document).on('change','.categories-drop', function(e){
+  var url = $("#bookForm").attr("data-categories-url");  // get the url of the `load_cities` view
+  console.log("aqui")
+  var categoryId = $(this).val();  // get the selected country ID from the HTML input
+
+  $.ajax({                       // initialize an AJAX request
+    url: url,                    // set the url of the request (= localhost:8000/hr/ajax/load-cities/)
+    data: {
+    'category': categoryId       // add the country id to the GET parameters
+    },
+    success: function (data) {   // `data` is the return of the `load_cities` view function
+      $("#teste").html(data);  // replace the contents of the city input with the data that came from the server
+      $('#id_category').attr("value", $('#var').val());
+      console.log($('#id_category').val());
+
+      console.log($('.categories-drop'));
+    }
+  });
+
+});
+
+</script>
+
+{% endblock content%}

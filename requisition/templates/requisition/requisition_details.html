@@ -2,47 +2,96 @@
 {%extends "library/base.html"%}
 {% load my_tags %}  
 {%block content %}  
-<div class="container mt-2">
-    <h1 style="font-family: myFirstFont; text-transform:uppercase; color: #009900;">Detalhes</h1>
+<div class="container mt-2" style="width:800px">
+    <h1 class="title">Detalhes</h1>
     
-    <img   src="imgs/hrtop.png" alt="" width="100%">
+    
     <table class="table table-borderless " >
         <tr style="border-bottom: 1px solid rgb(241, 200, 200); ">
-            <th class="text-right row-width" scope="row">Aluno:</th>
-            <td ><span style="margin-right: 100px;">dfsdsfgfds</span><a href="{%url 'update-user' requisition.user.pk%}" style="height: 30px;vertical-align: center;" class="btn btn-danger text-center text-white">Detalhes</a></th>
+            <th class="text-right row-width" scope="row">Numero de aluno:</th>
+            <td>{{requisition.user.username}}</tdh>
 
         </tr>
+
+        <tr style="border-bottom: 1px solid rgb(241, 200, 200); ">
+            <th class="text-right row-width" scope="row">Nome:</th>
+            <td> {{requisition.user.profile.name}} </td>
+
+        </tr>
+
+               <tr style="border-bottom: 1px solid rgb(241, 200, 200);">
+            <th class="text-right" scope="row">Email:</th>
+            <td> {{requisition.user.email}} </td>
+
+        </tr>
+
+            <tr style="border-bottom: 1px solid rgb(241, 200, 200); ">
+            <th class="text-right row-width" scope="row">Código do livro:</th>
+            <td> {{requisition.item}} </td>
+
+        </tr>
+        <tr style="border-bottom: 1px solid rgb(241, 200, 200); ">
+            <th class="text-right row-width" scope="row">Titulo do livro:</th>
+            <td> {{requisition.item.content_object.title}} </td>
+
+        </tr>
+
         <tr style="border-bottom: 1px solid rgb(241, 200, 200);">
             <th class="text-right" scope="row">Data de requisição:</th>
-            <td >mojemilosc@hotmail.com</th>
+            <td> {{requisition.date|date:" d/m/Y"}} </td>
             
 
         </tr>
         <tr style="border-bottom: 1px solid rgb(241, 200, 200);">
             <th class="text-right" scope="row">Data limite:</th>
-            <td >Agnieszka Bernaś</th>
+            <td> {{requisition.deadline|date:" d/m/Y"}} </td>
 
         </tr>
         
         <tr style="border-bottom: 1px solid rgb(241, 200, 200);">
             <th class="text-right" scope="row">Estado:</th>
-            <td >25</th>
+
+
+
+            {% if requisition.state|stringformat:"s" == 'D' %}
+            <td>Entregue </td>
+
+            
+            {% elif requisition.state|stringformat:"s" == 'OG' %}
+
+            <td>A Decorrer </td>
+
+            {% elif requisition.state|stringformat:"s" == 'DY' %}
+            
+            <td>Atrasado </td>
+
+            {% endif %}
+            
+
+
+
+
+
+
 
         </tr>
         <tr style="border-bottom: 1px solid rgb(241, 200, 200);">
-            <th class="text-right" scope="row">Descrição:</th>
-            <td >Uma noite ao luar</th>
+            <th class="text-right" scope="row">Data de Entrega:</th>
+            <td> {{requisition.deliverDate|date:" d/m/Y"}} </td>
 
         </tr>
-        
+        <tr style="border-bottom: 1px solid rgb(241, 200, 200);">
+            <th class="text-right" scope="row">Notas:</th>
+            <td> {{requisition.note}} </td>
+
+        </tr>
 
      </table>       
-    <div class="form-check">
-        <input type="checkbox" class="form-check-input" id="exampleCheck1">
-        <label class="form-check-label" for="exampleCheck1">Agnieszka Bernaś tomou conhecimento da data de entrega e das consequentes penalizações.</label>
-        
-    </div>
-    <button type="confirmar" class="btn text-white mt-2" style="background: #b30000;">Confirmar </button>
+   
+    <div style="display: flex; justify-content: center;">
+      
+      <a class="btn btn-normal" style="width:150px" href="{% url 'requisition-home'%}">Cancelar</a>
+</div>
       
 </div>
     

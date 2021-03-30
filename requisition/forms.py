@@ -3,5 +3,5 @@ from django import forms
 
 class RequisitionCreateForm(forms.ModelForm):
     class Meta:
-        fields = ('book','user',)
+        fields = ('item','user',)
         model = Requisition

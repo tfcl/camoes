@@ -1,0 +1,60 @@
+
+<div id="confirmation-div"> 
+<h1 class="title mb-3">Confirmar Requisição</h1>
+<p style="margin-left: 5px;font-weight:bold">Está prestes a iniciar <span id="numberSpan"></span></p>
+
+
+<p id="userP"style="margin-left: 5px;font-weight:bold">Utilizador: <span style="font-weight:normal"id="userSpan"></span></p>
+<p id="userP"style="margin-left: 5px;font-weight:bold">Email: <span style="font-weight:normal"id="emailSpan"></span></p>
+
+<p style="margin-left: 5px;font-weight:bold">Data Limite de Entrega: <span span style="font-weight:normal"  id="deadlineSpan"></span></p>
+<p style="margin-left: 5px;">O utilizador confirma que toma conhecimento da data limite de entrega.</p>
+
+
+<div style="display: flex; justify-content: center;">
+    <a  class="btn  btn-normal mr-1" id="btn-confirm" >Confirmar</a>
+    <a class="btn  btn-normal ml-1" id="btn-cancel"  >Cancelar</a>
+    </div>
+{% csrf_token %}
+</div>
+<script>
+$("#emailSpan").text($("#email").val());
+
+$("#userSpan").text($("#userName").val());
+
+if(numberBooks==1){
+    numberSpanString=numberBooks+" requisição"
+}
+else{
+
+numberSpanString=numberBooks+" requisições"
+
+}
+
+$("#numberSpan").text(numberSpanString);
+
+$("#deadlineSpan").text($("#deadline").val());
+
+$(document).on('click', '#btn-cancel', function(){
+
+$("#overlay").css("display", "none");
+
+
+
+})
+
+
+$(document).on('click', '#btn-confirm', function(){
+console.log("confirmar");
+var CSRFtoken = $('input[name=csrfmiddlewaretoken]').val();
+var userPk=$('#userPk').val();
+$( "form" ).submit();
+
+
+
+
+
+})
+
+
+</script>

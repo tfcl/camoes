@@ -1,0 +1,791 @@
+{%extends "library/base.html"%}
+{% load my_tags %}
+{%block content %}
+<style>
+
+
+
+#author-overlay {
+position: fixed;
+display:none;
+width: 600px;
+height: 400px;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+background-color: white;
+z-index: 2;
+
+margin: auto;
+
+border-style: solid;
+border-color: #b30000;
+padding:25px;
+border-radius: 15px;
+}
+
+
+#publisher-overlay {
+position: fixed;
+display:none;
+width: 600px;
+height: 400px;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+background-color: white;
+z-index: 2;
+
+margin: auto;
+
+border-style: solid;
+border-color: #b30000;
+padding:25px;
+border-radius: 15px;
+}
+
+
+
+
+
+
+.book-form, td, th, #book-overlay{
+  border: 10px solid black;
+  border-color:white;
+
+}
+
+.tr{
+
+  width:400px
+}
+
+.tr{
+
+  padding-left:15px;
+}
+
+.ti{
+  padding-left:0;
+
+{% comment %} }
+input{
+  width:100%;
+}
+ {% endcomment %}
+
+
+
+</style>
+
+<form method="post" id="bookForm" data-categories-url="{%url 'ajax-load-categories'%}">{% csrf_token %}
+</form>
+
+<div id="publisher-overlay" class="overlay pt-4">
+  <a class="b-r btn m-0 p-0"  id="btn-publisher-cancel" style="position:relative; right:-3%; top:-20px; float: right; font-size: 33px" ><i style="color:#b30000" class="far fa-times-circle"></i> </a>
+  <h1 class="title">Autor</h1>
+  <div id="publisher-overlay-inside">
+   
+   
+   
+   
+   
+   
+   
+   
+   
+{% comment %}    
+   
+   '<div class="form-group row">
+      <label for="" id=""class="pr-0 mr-0 col-sm-3 col-form-label">Nome Completo: </label>
+      <div class="col-sm-9 ml-0">
+        <input type="text" name="name" class="publisher-form form-control" id="" placeholder="">
+          
+      </div>
+    </div>  
+     <div class="form-group row">
+      <label for="" id=""class="pr-0 mr-0 col-sm-3 col-form-label">Data de Nascimento: </label>
+      <div class="col-sm-9 ml-0">
+        <input type="text" name="birthyear" class="publisher-form form-control" id="" placeholder="">
+          
+      </div>
+    </div> 
+     <div class="form-group row">
+      <label for="" id=""class="pr-0 mr-0 col-sm-3 col-form-label">Data de Óbito: </label>
+      <div class="col-sm-9 ml-0">
+        <input type="text" name="deathyear"class="publisher-form form-control" id="" placeholder="">
+          
+      </div>
+    </div> 
+  <div id="publisher-overlay-buttons"style="display: flex; justify-content: center; margin-top:25px">
+    <a  class="btn  btn-normal ml-1" id="btn-publisher-cancel" style="width:132px" >Cancelar</a>
+    <a  class="btn  btn-normal ml-1" id="btn-publisher-manual-confirm" style="width:132px" >Confirmar</a>
+  </div>
+</div>'
+ {% endcomment %}
+
+
+
+
+
+
+    <div class="form-group row">
+      <label for="" id="dropdown-publishers-label"class="pr-0 mr-0 col-sm-3 col-form-label">Pesquisar Autor: </label>
+      <div class="col-sm-9 ml-0">
+
+          <div style="display: flex;">
+            <input type="text" class="form-control" id="inputPublisher" placeholder="">
+            
+              <div class=""style=" background-color:#b30000; margin: auto; width: 40px; height: 38px; vertical-align: middle;text-align: center;display: table-cell;">
+
+                <a class="btn-normal" id="btn-publisher-add" ><i style="font-size: 20px;padding-top: 9px;" class="fas fa-search"></i></a>
+              </div>
+            
+            
+          </div>
+      </div>
+    </div>
+  
+
+ 
+
+  <div class="form-group row">
+    <label for="" id="dropdown-publishers-label"class="ml-0 col-sm-3 col-form-label"></label>
+    <div id="dropdown-publishers" class="col-sm-9 ml-0">
+      
+    </div>
+  </div>
+  <div id="publisher-overlay-buttons"style="display: flex; justify-content: center; margin-top:25px">
+  </div>
+
+</div>
+
+
+
+</div>
+
+
+<div id="author-overlay" class="overlay pt-4">
+  <a class="b-r btn m-0 p-0"  id="btn-book-cancel" style="position:relative; right:-3%; top:-20px; float: right; font-size: 33px" ><i style="color:#b30000" class="far fa-times-circle"></i> </a>
+  <h1 class="title">Autor</h1>
+  <div id="author-overlay-inside">
+   
+   
+   
+   
+   
+   
+   
+   
+   
+{% comment %}    
+   
+   '<div class="form-group row">
+      <label for="" id=""class="pr-0 mr-0 col-sm-3 col-form-label">Nome Completo: </label>
+      <div class="col-sm-9 ml-0">
+        <input type="text" name="name" class="author-form form-control" id="" placeholder="">
+          
+      </div>
+    </div>  
+     <div class="form-group row">
+      <label for="" id=""class="pr-0 mr-0 col-sm-3 col-form-label">Data de Nascimento: </label>
+      <div class="col-sm-9 ml-0">
+        <input type="text" name="birthyear" class="author-form form-control" id="" placeholder="">
+          
+      </div>
+    </div> 
+     <div class="form-group row">
+      <label for="" id=""class="pr-0 mr-0 col-sm-3 col-form-label">Data de Óbito: </label>
+      <div class="col-sm-9 ml-0">
+        <input type="text" name="deathyear"class="author-form form-control" id="" placeholder="">
+          
+      </div>
+    </div> 
+  <div id="author-overlay-buttons"style="display: flex; justify-content: center; margin-top:25px">
+    <a  class="btn  btn-normal ml-1" id="btn-book-cancel" style="width:132px" >Cancelar</a>
+    <a  class="btn  btn-normal ml-1" id="btn-book-manual-confirm" style="width:132px" >Confirmar</a>
+  </div>
+</div>'
+ {% endcomment %}
+
+
+
+
+
+
+    <div class="form-group row">
+      <label for="" id="dropdown-authors-label"class="pr-0 mr-0 col-sm-3 col-form-label">Pesquisar Autor: </label>
+      <div class="col-sm-9 ml-0">
+
+          <div style="display: flex;">
+            <input type="text" class="form-control" id="inputAuthor" placeholder="">
+            
+              <div class=""style=" background-color:#b30000; margin: auto; width: 40px; height: 38px; vertical-align: middle;text-align: center;display: table-cell;">
+
+                <a class="btn-normal" id="btn-book-add" ><i style="font-size: 20px;padding-top: 9px;" class="fas fa-search"></i></a>
+              </div>
+            
+            
+          </div>
+      </div>
+    </div>
+  
+
+ 
+
+  <div class="form-group row">
+    <label for="" id="dropdown-authors-label"class="ml-0 col-sm-3 col-form-label"></label>
+    <div id="dropdown-authors" class="col-sm-9 ml-0">
+      
+    </div>
+  </div>
+  <div id="author-overlay-buttons"style="display: flex; justify-content: center; margin-top:25px">
+  </div>
+
+</div>
+
+
+
+</div>
+
+
+
+<div class="container">
+  <h1 >Confirmar Livro</h1>
+
+
+    <div class="form-group row">
+      <label for="" class="col-sm-1 col-form-label">Titulo:</label>
+      <div class="col-sm-9">
+        <input type="text" class="form-control" id="" placeholder="">
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="" class="col-sm-1 col-form-label">Autores:</label>
+      <div id="form-authors" class="col-sm-9">
+        
+        
+          <input type="text" class="d-inline form-control" id="inputBook" placeholder="">
+
+      {% comment %} <div style="display: flex;" >
+
+          <a href="#"class="b-r mr-2 btn-author-delete" style="padding-top: 5px;font-size: 20px;"><i class="far fa-trash-alt"></i></a>
+          <input type="text" readonly class="d-inline form-control-plaintext"  value='+selectedText+'>
+          <input type="hidden" name="authors" value='+selected+'/>
+      </div>
+       {% endcomment %}
+
+
+      </div>
+    </div>
+
+
+    <div class="form-group row">
+      <label  for="" class="col-sm-1 col-form-label">Editora:</label>
+      <div id="form-publishers" class="col-sm-9">
+        <input type="text" class="form-control" id="inputPublisher1" placeholder="">
+      </div>
+    </div>
+    
+    <div class="form-group row">
+      <label for="" class="col-sm-1 col-form-label">Ano:</label>
+      <div class="col-sm-9">
+        <input type="text" class="form-control" id="" placeholder="">
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="" class="col-sm-1 col-form-label">Categoria:</label>
+      <div class="col-sm-9">
+        <input type="text" class="form-control" id="" placeholder="">
+      </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <select name="" id="id_category1" class="categories-drop">
+    {%for category in categories%}
+    <option value="{{category.pk}}">{{ category}}</option>
+    {%endfor%}
+
+  </select>
+</div>
+
+<input type="checkbox" class="categories-drop">
+
+{{form.category.as_hidden}}
+<input type="submit" class="btn btn-normal">
+{{form.authors.as_hidden}}
+<div id="hidden-inputs">
+</div>
+</form>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="{% static 'insertAuthor.js' %}"></script>
+<script src="{% static 'insertPublisher.js' %}"></script>
+<script>
+
+
+
+
+
+{% comment %} Publisher input handler {% endcomment %}
+
+
+
+
+
+var flagPublisher=false;
+var searchPublisher="";
+
+{% comment %} confirm button final page {% endcomment %}
+$(document).on('click', '#btn-publisher-confirm', function(){
+  console.log("agui!!!");
+  var selected=$('#select-publisher').find(":selected").val();
+  var selectedText=$('#select-publisher').find(":selected").text();
+  
+  $("#inputPublisher1").val(selectedText);
+
+  restart();
+    
+
+
+});
+
+$(document).on('click', '#inputPublisher1', function(){
+
+  $("#publisher-overlay").css("display", "block");
+  flagPublisher=true;
+  console.log(flagPublisher);
+});
+
+
+$(document).on('click', "#btn-publisher-add", function(){
+
+    $("div").remove(".warning-display");
+    var name= $("#inputPublisher").val();
+    search=name;
+  if(name!=""){
+
+    if(flagSearch==false){
+
+      flagSearch=true;
+
+      
+
+      $.ajax({
+        type: 'GET',
+              url: "{% url 'ajax-insert-publisher' %}",
+              data:{ name:name},
+
+        success: function(data){
+          console.log("data")
+
+          if (data==-1){
+            console.log("nao encontrou")
+            loadPublisherManual();
+
+          }
+          else{
+                console.log(data);
+
+                $('#search-publisher').remove();
+                var sel=$('<select>').appendTo('#dropdown-publishers');
+                
+                var label=$('#dropdown-publishers').parent();
+
+                console.log("label");
+                label.children('label').text("Resultados:");
+
+               $("label[for='select-publisher']").text("Resultados:");
+               
+                
+
+
+                sel.attr('id', 'select-publisher');
+                sel.addClass("form-control");
+
+                $('#publisher-overlay-buttons').prepend('<a  class="btn  btn-normal ml-1" id="btn-publisher-manual" style="width:132px" >Manualmente</a>');
+                $('#publisher-overlay-buttons').prepend('<a  class="btn  btn-normal ml-1" id="btn-publisher-confirm" style="width:132px" >Confirmar</a>');
+                
+                
+                
+                $(data).each(function() {
+
+                  {% comment %} Subtituir espaços {% endcomment %}
+                  sel.append($("<option>").attr('value',this.pk).text(this.fields.name.replaceAll(" ", "\xa0")));
+                });
+
+
+          }
+
+        }});
+
+
+    }
+
+    else{
+          $('#publisher-overlay-inside').prepend('<div class="warning-display form-control m-0" ><p>Para pesquisar de novo feche esta janela e volte a abrir</p></div>');
+
+
+
+    }
+
+
+
+  }
+  else{
+      $('#publisher-overlay-inside').prepend('<div class="warning-display form-control m-0" ><p>O campo é obrigatório</p></div>');
+
+  }
+
+
+});
+
+
+
+
+
+
+{% comment %} author input handler {% endcomment %}
+
+
+var flagSearch=false;
+var search="";
+function verifyYear(year){
+  {% comment %} &&  year.length!=4 && parseInt(year)<1000 && parseInt(year)>3000 {% endcomment %}
+  console.log("função ano");
+  
+  console.log(year);
+  if((!isNaN(year)  &&  year.length == 4 && parseInt(year)>1000 && parseInt(year)<3000) )  {
+    return true;
+
+  }
+  else{
+    return false;
+  }
+
+
+}
+
+function verifybirthanddeath(b,d){
+
+  if(b===""||d===""){
+    return true;
+
+
+
+  }
+
+  else{
+
+    b=parseInt(b);
+    d=parseInt(d);
+    if(b<d){
+      return true;
+
+    }
+    else{
+      return false;
+    }
+
+  }
+  
+}
+
+
+
+
+function loadAuthorManual(){
+  console.log("load manual")
+  $("#author-overlay-inside").empty();
+  
+  
+
+  $("#author-overlay-inside").append(   '<div class="form-group row">      <label for="" class="pr-0 mr-0 col-sm-3 col-form-label">Nome Completo: </label>      <div class="col-sm-9 ml-0">        <input type="text" id="author-input-manual" name="name" class="author-form form-control"  placeholder="">                </div>    </div>       <div class="form-group row">      <label for="" id=""class="pr-0 mr-0 col-sm-3 col-form-label">Data de Nascimento: </label>      <div class="col-sm-9 ml-0">        <input type="text" name="birthyear" class="author-form form-control"  placeholder="">                </div>    </div>      <div class="form-group row">      <label for="" id=""class="pr-0 mr-0 col-sm-3 col-form-label">Data de Óbito: </label>      <div class="col-sm-9 ml-0">        <input type="text" name="deathyear"class="author-form form-control"  placeholder="">                </div>    </div>   <div id="author-overlay-buttons"style="display: flex; justify-content: center; margin-top:25px">    <a  class="btn  btn-normal ml-1" id="btn-book-manual-confirm" style="width:132px" >Confirmar</a>  </div></div>');
+  $("#author-input-manual").val(search);
+
+}
+
+function restart(){
+  $("#author-overlay-inside").empty();
+  $("#author-overlay-inside").append('<div id="author-overlay-inside">\        <div class="form-group row">\          <label for="" id="dropdown-authors-label"class="pr-0 mr-0 col-sm-3 col-form-label">Pesquisar Autor: </label>\          <div class="col-sm-9 ml-0">\              <div style="display: flex;">\                <input type="text" class="form-control" id="inputAuthor" placeholder="">\                          <div class=""style=" background-color:#b30000; margin: auto; width: 40px; height: 38px; vertical-align: middle;text-align: center;display: table-cell;">\                    <a class="btn-normal" id="btn-book-add" ><i style="font-size: 20px;padding-top: 9px;" class="fas fa-search"></i></a>\                  </div>\              </div>\          </div>\        </div>\      <div class="form-group row">        <label for="" id="dropdown-authors-label"class="ml-0 col-sm-3 col-form-label"></label>\        <div id="dropdown-authors" class="col-sm-9 ml-0">\        </div>\      </div>\      <div id="author-overlay-buttons"style="display: flex; justify-content: center; margin-top:25px">\              </div>\    </div>');
+  $("#author-overlay").css("display", "none");
+  search="";
+  flagSearch=false;
+}
+
+function authorInsert(){
+
+
+
+}
+{% comment %} <input type="text" readonly class="form-control-plaintext"  value="dffggf"> {% endcomment %}
+
+{% comment %} confirm manual author insertation handler {% endcomment %}
+$(document).on('click', '#btn-book-manual-confirm', function(){
+  
+  $("div").remove(".warning-display");
+  var form = $(".author-form");
+  var formData={};
+  var tempName;
+  var tempValue;
+  var name=form.eq(0).val()
+  var birthyear=form.eq(1).val();
+  var deathyear=form.eq(2).val();
+
+  {% comment %} console.log("verificação teste");
+
+  console.log(form.eq(1).val());
+  console.log(verifyYear(birthyear));
+  console.log(verifyYear(deathyear)); {% endcomment %}
+
+  if(name===""){
+     $('#author-overlay-inside').prepend('<div class="warning-display form-control m-0" ><p>O campo nome é obrigatório</p></div>');
+    
+
+  }
+  else{
+    
+
+    if((verifyYear(birthyear)||birthyear==="") && (verifyYear(deathyear)||deathyear==="") ){
+      
+      if(verifybirthanddeath(birthyear,deathyear)){
+        form.each(function(){
+          tempName=$(this).attr("name");
+          tempValue=$(this).val().replace(/ +(?= )/g,'');
+
+          formData[tempName]=tempValue
+
+
+        });
+        var formAuthorJson=JSON.stringify(formData);
+        console.log(formAuthorJson);
+        console.log("manual insert");
+
+
+
+        $.ajax({
+                type: "POST",
+                url: "{% url 'ajax-insert-author' %}",
+                
+                data:{
+                      form: formAuthorJson, // serializes the form's elements.
+                      csrfmiddlewaretoken: '{{ csrf_token }}'
+                      },
+                success: function(data)
+                {
+                    console.log("Sucesso"); // show response from the php script.
+                    var dataJson = JSON.parse(data);
+
+                    console.log(dataJson);                    
+
+
+                    var htmlString='<div style="display: flex;" ><a href="#"class="b-r mr-2 btn-author-delete" style="padding-top: 5px;font-size: 20px;"><i class="far fa-trash-alt"></i></a><input type="text" readonly class="d-inline form-control-plaintext"  value='+dataJson.name.replaceAll(" ", "\xa0")+'><input type="hidden" name="authors" value='+dataJson.pk+'/></div>';
+  
+
+                    console.log(htmlString)
+                    $("#form-authors").append(htmlString);
+                    restart();
+
+                }
+              });
+
+
+
+      }
+      else{
+        $('#author-overlay-inside').prepend('<div class="warning-display form-control m-0" ><p>Confira os anos</p></div>');
+        
+
+      }  
+
+
+
+
+    }
+    else{
+      console.log("verifique os anos");
+      $('#author-overlay-inside').prepend('<div class="warning-display form-control m-0" ><p>Confira os anos</p></div>');
+
+    }
+
+
+  }
+
+
+});
+
+
+
+{% comment %} delete inserted authors {% endcomment %}
+$(document).on('click', '.btn-author-delete', function(){
+
+  console.log("delete");
+  $(this).parent('div').remove();
+
+
+});
+$(document).on('click', '#btn-book-confirm', function(){
+
+  var selected=$('#select-author').find(":selected").val();
+  var selectedText=$('#select-author').find(":selected").text();
+  var htmlString='<div style="display: flex;" ><a href="#"class="b-r mr-2 btn-author-delete" style="padding-top: 5px;font-size: 20px;"><i class="far fa-trash-alt"></i></a><input type="text" readonly class="d-inline form-control-plaintext"  value='+selectedText+'><input type="hidden" name="authors" value='+selected+'/></div>';
+  
+
+  
+  $("#form-authors").append(htmlString);
+  restart();
+    
+
+
+});
+$(document).on('click', "#btn-book-add", function(){
+
+    $("div").remove(".warning-display");
+    var name= $("#inputAuthor").val();
+    search=name;
+  if(name!=""){
+
+    if(flagSearch==false){
+
+      flagSearch=true;
+
+      
+
+      $.ajax({
+        type: 'GET',
+              url: "{% url 'ajax-insert-author' %}",
+              data:{ name:name},
+
+        success: function(data){
+          console.log("data")
+
+          if (data==-1){
+            console.log("nao encontrou")
+            loadAuthorManual();
+
+          }
+          else{
+                console.log(data);
+
+                $('#search-author').remove();
+                var sel=$('<select>').appendTo('#dropdown-authors');
+                
+                var label=$('#dropdown-authors').parent();
+
+                console.log("label");
+                label.children('label').text("Resultados:");
+
+               $("label[for='select-author']").text("Resultados:");
+               
+                
+
+
+                sel.attr('id', 'select-author');
+                sel.addClass("form-control");
+
+                $('#author-overlay-buttons').prepend('<a  class="btn  btn-normal ml-1" id="btn-author-manual" style="width:132px" >Manualmente</a>');
+                $('#author-overlay-buttons').prepend('<a  class="btn  btn-normal ml-1" id="btn-book-confirm" style="width:132px" >Confirmar</a>');
+                
+                var dataJson1 = JSON.parse(data);
+                console.log(dataJson1)
+                $(dataJson1).each(function() {
+
+                  {% comment %} Subtituir espaços {% endcomment %}
+                  sel.append($("<option>").attr('value',this.pk).text(this.name.replaceAll(" ", "\xa0")));
+                });
+
+
+          }
+
+        }});
+
+
+    }
+
+    else{
+          $('#author-overlay-inside').prepend('<div class="warning-display form-control m-0" ><p>Para pesquisar de novo feche esta janela e volte a abrir</p></div>');
+
+
+
+    }
+
+
+
+  }
+  else{
+      $('#author-overlay-inside').prepend('<div class="warning-display form-control m-0" ><p>O campo é obrigatório</p></div>');
+
+  }
+
+
+});
+
+$(document).on('click', "#btn-author-manual", function(){
+  console.log("forçar manual");
+  loadAuthorManual();
+
+  
+});
+
+
+
+$(document).on('click', "#btn-book-cancel", function(){
+  restart();
+  $("#author-overlay").css("display", "none");
+
+
+});
+
+$('#inputBook').click(function(e) {
+  $("#author-overlay").css("display", "block");
+  flag=true;
+  console.log(flag);
+});
+
+$(document).on('change','.categories-drop', function(e){
+  var url = $("#bookForm").attr("data-categories-url");  // get the url of the `load_cities` view
+  console.log("aqui")
+  var categoryId = $(this).val();  // get the selected country ID from the HTML input
+
+  $.ajax({                       // initialize an AJAX request
+    url: url,                    // set the url of the request (= localhost:8000/hr/ajax/load-cities/)
+    data: {
+    'category': categoryId       // add the country id to the GET parameters
+    },
+    success: function (data) {   // `data` is the return of the `load_cities` view function
+      $("#teste").html(data);  // replace the contents of the city input with the data that came from the server
+      $('#id_category').attr("value", $('#var').val());
+      console.log($('#id_category').val());
+
+      console.log($('.categories-drop'));
+    }
+  });
+
+});
+
+</script>
+
+{% endblock content%}
+
+<script src="{% static 'library/insertAuthor.js' %}"></script>
+<script src="{% static 'library/insertPublisher.js' %}"></script>

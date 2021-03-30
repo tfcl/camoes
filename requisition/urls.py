@@ -14,15 +14,30 @@ urlpatterns = [
     path('update/<pk>/', views.RequisitionUpdateView.as_view(), name='update-requisition'),
 
     #requisitarNew
-    path('create/', views.RequisitionView.as_view(), name='create-requisition'),
+    path('create/', views.requisitionEntry, name='create-requisition'),
     #requisition-confirm
-    path('create/confirm', views.RequisitionCreateView.as_view(), name='confirm-requisition'),
+    
     
     #vertodos
     path('seeAll/',views.seeAll, name='see-all'),
-    path('create/cancelRequisition', views.cancelRequisition , name='requisition-cancel'),
-    path('<pk>/', views.RequisitionDetailView.as_view(), name='detail-requisition')
+   
+    path('<pk>/', views.RequisitionDetailView.as_view(), name='detail-requisition'),
 
+
+    path('seeNotification/<pk>/', views.seeNotification, name='see-notification'),
+
+
+    #ajax
+    #check user
+    path('ajax/checkUser', views.checkUser, name='ajax-check-user'),
+
+    path('ajax/addBook', views.addBook, name='ajax-add-book'),
+
+    path('ajax/confirmRequisition', views.confirmRequisition, name='ajax-confirm-requisition'),
+
+    
+
+    
 
     ##Funções
     #

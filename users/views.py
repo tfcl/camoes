@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect
 
 from django.contrib import messages
-from .forms import UserRegisterForm, ProfileCreateForm
+from .forms import UserRegisterForm,ProfileCreateForm
 from django.views.generic import ListView, UpdateView
 from django.contrib.auth.models import User
 from .models import Profile

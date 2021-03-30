@@ -4,13 +4,13 @@
 {%block content %}  
 
 <div class="container mt-2">
-    <h1 style="font-family: myFirstFont; text-transform:uppercase; color: #009900;">Concluir Requisição</h1>
+    <h1 class='title' style="">Concluir Requisição</h1>
     
     <img   src="imgs/hrtop.png" alt="" width="100%">
     <table class="table table-borderless " >
         <tr style="border-bottom: 1px solid rgb(241, 200, 200);">
             <th class="text-right row-width" scope="row">Nº do Aluno:</th>
-            <td >------</th>
+            <td >{{requisition.user.username}}</th>
 
         </tr>
         <tr style="border-bottom: 1px solid rgb(241, 200, 200);">
@@ -20,31 +20,37 @@
         </tr>
         <tr style="border-bottom: 1px solid rgb(241, 200, 200);">
             <th class="text-right" scope="row">Nome do Aluno:</th>
-            <td >{{requisition.user.username}}</th>
+            <td >{{profile.name}}</th>
 
         </tr>
         
         <tr style="border-bottom: 1px solid rgb(241, 200, 200);">
             <th class="text-right" scope="row">Código do livro:</th>
-            <td >--------</th>
+            <td >{{requisition.item}}</th>
 
         </tr>
         <tr style="border-bottom: 1px solid rgb(241, 200, 200);">
             <th class="text-right" scope="row">Titulo do livro</th>
-            <td >{{requisition.book.title}}</th>
+            <td >{{requisition.item.content_object.title}}</th>
 
- 
+         </tr>
+        <tr style="border-bottom: 1px solid rgb(241, 200, 200);">
+            <th class="text-right" scope="row">Notas: </th>
+            <td >{{requisition.note}}</th>
+
+        </tr>   
      </table>       
 
     <form method="post">
       {% csrf_token %}
       
-      
+      {{form.deliverDate.as_hidden}}
       {{ form.state.as_hidden }}
   
-      
-      <input type="submit" class="btn text-white mt-2" value="Entregar" style="background: #b30000;">
-      <a class="btn text-white mt-2" style="background: #b30000;" href="{% url 'requisition-home'%}">Cancelar</a>
+<div style="display: flex; justify-content: center;">
+      <input type="submit" class="btn text-white mt-2 mr-1" value="Entregar" style="background: #b30000;">
+      <a class="btn text-white mt-2 ml-1" style="background: #b30000;" href="{% url 'requisition-home'%}">Cancelar</a>
+</div>
     </form>    
     </div>
       

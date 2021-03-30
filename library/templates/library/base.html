@@ -13,149 +13,216 @@
   
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
   <script src="{% static 'library/checkBox.js' %}" type="text/javascript"></script>  
   <link rel="stylesheet" href="{% static 'library/camoes.css' %}">
   <title>Luis de Camões</title>
 </head>
 
 <body>
-   <script>
-     const socket = new WebSocket(
-            'ws://'
-            + window.location.host
-            + '/ws/library'
-            
-            + '/'
-        );
-        socket.onmessage = function(e){
-          var optionSubject = document.createElement("a");
-          var options = document.createElement("a");
-          var data = JSON.parse(e.data);
-          for(var key in data){
-            if (data.hasOwnProperty(key)){
-                var value=data[key];
-                if (key=="message"){
-                  string=value;
-                  
-                }
-                if (key=="subject"){
-                  string=string+" <br> "+value;
-                  optionSubject.text=value;
-                  console.log(string);
-                  options.text=string;
-                }
-                // work with key and value
-            }
-        }
-          
-          var dropdown = document.getElementById("notifications");
-          
-          options.classList.add("dropdown-item");
-          optionSubject.classList.add("dropdown-item");
+ <script>
 
-          options.style.color="black"
-          dropdown.appendChild(optionSubject);
-
-          dropdown.appendChild(options);
-          elem = document.createElement("hr");
-          dropdown.appendChild(elem);
-          console.log("message",e)
-        }
-        socket.onopen = function(e){
-
-          console.log("open",e)
-        }
-
-        socket.onerror = function(e){
-
-          console.log("error",e)
-        }
-        socket.onclose = function(e){
-
-          console.log("close",e)
-        }
-  </script> 
-  <div id="banner" class="">
-    <img src="{% static 'library/Banner.png' %}" alt=""width=100%  height="150px" style="object-fit: cover;" >
-    </div>
-
-   
-  <nav id="mainNavbar" class="navbar navbar-expand-lg  py-0 px-5">
-    <a href="{%url 'camoes-home'%}" class="navbar-brand mr-5"><img src="{% static 'library/C.png' %}" width="50" height="50" alt=""> </a>
-    <div class="navbar-nav">
-      
-      <!-- <a class="nav-item nav-link" style="text-align:center;max-width: 80px;" href="">Requisitar<i class="fas fa-book"></i></a> -->
-      <a class="nav-item nav-link " href="{%url 'menu' %}" style="text-align:center;max-width: 80px;">Gestor <i class="fas fa-cogs"></i></a>
-      <a class="nav-item nav-link " href="{%url 'create-requisition' %}" style="text-align:center;max-width: 80px;">Requisitar <i class="fas fa-cogs"></i></a>
-      
-    </div>
-    <div class=" ml-5 container justify-content-start ">
-      <button  class="btn btn-outline-danger border border-white rounded-0 dropdown-toggle wrn-btn text-white" type="button" id="dropdownMenuButton"   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        Palavra-chave
-      </button>
-      
-
-             
-              <form class="form-check form-check-inline"  action="{%url 'camoes-home'%}" method="get">
-                
-                <input type="text" class="form-control search-slt rounded-0" placeholder="Pesquisa Rápida" name="q" type="text">
-                <button type="button" class="btn btn-danger wrn-btn rounded-right rounded-0" onclick="myFunction()"><i class="fa fa-search"></i></button>
-              </form>
-              <a class="text-white" href="#"><b>Pesquisa avançada</b></a> 
-        </div>
+var auxIcon=false;
   
-  
-    <div class="navbar-nav ml-auto">
-      
-      <a class="nav-item nav-link" href="#"> <i class="fas fa-user"></i></a>
-      <div class="dropdown">
-      <button class="btn btn-secondary dropdown-toggle nav-item nav-link" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        <i class="fas fa-bell"></i>
-      </button>
-      
-      
-        <div id="notifications"class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton" style="width: 400px;">
-          <div class="">
-          <div style= "display:inline-block">
-            <p class="m-2"  >Notificações (<b>2</b>)</p>
-          </div>
-          <div style= "display:inline-block">
+function changeNotificationIcon() {
+    button=$('#notification-button')
+    console.log(button.html())
 
-            <a href="{%url 'see-all'%}"class="btn btn-danger dropdown-item" >Ver todas   <i class="far fa-eye"style="color:gray"></i></a>
-          </div>
-          
+    if(auxIcon===false){
+      button.html('<i class="far fa-bell"></i>')
+      auxIcon=true;
+    }
+    else if(auxIcon===true){
 
-          </div>
-            <hr>
-          </div>
-          
-          
+      button.html('<i class="fas fa-bell"></i>')
+
+      auxIcon=false;
+
+    }
+}
+
+
+
+   const socket = new WebSocket(
+    'ws://'
+    + window.location.host
+    + '/ws/library'
+    
+    + '/'
+    );
+   socket.onmessage = function(e){
+
+    console.log("message",e);
+    const dataJson = JSON.parse(e.data);
+    console.log(dataJson['message'])
+
+    if (dataJson['message']===true){
+      console.log("notificação");
+      $.ajax({
+       type: 'GET',
+       url: "{% url 'ajax-get-notifications' %}",
+
+       success: function(data){
+        setInterval(changeNotificationIcon, 1000);
         
-      </div>
-      
-    </div>
-  </nav>
-  {% if messages%}
-    {%for message in messages%}
-      <div class="alert alert-{{ message.tags}}">
-        {{message}}
-      </div>
-    {%endfor%}
-  {% endif %}
-  {% block content%}{%endblock%}
- 
-  <!-- Optional JavaScript -->
-  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
-    integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
-    crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
-    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
-    crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
-    integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
-    crossorigin="anonymous"></script>
-</body>
+        console.log("ajax-sucess");
+        console.log(data);
+        const notificationDiv=$('#notifications');  
+        const notificationNumber=$('#notification-number')
+        
+        
+        $('#seeAllDiv').css('display', "inline-block");
 
-</html>
+        notificationNumber.text(data.length);
+  
+        data.forEach(function(item){
+          console.log(item)
+          pk=item.pk
+          var url = "{% url 'see-notification' 123 %}".replace('123', pk);
+          notificationDiv.append('<a class="disabled" style="text-decoration: none;" href="'+url+'"><p class="m-2"style="font-weight: bold;color: #b30000;margin: 0,0,1px,0;">Requisição atrasada</p> <p style="color:black"class="m-2">'+item.fields.message+'</p> </a> <hr>');  
+
+
+        
+        
+        });
+
+
+
+      }});
+
+
+
+    }
+    {% comment %} var optionSubject = document.createElement("a");
+    var options = document.createElement("a");
+    var data = JSON.parse(e.data);
+    for(var key in data){
+      if (data.hasOwnProperty(key)){
+        var value=data[key];
+        if (key=="message"){
+          string=value;
+          
+        }
+        if (key=="subject"){
+          string=string+" <br> "+value;
+          optionSubject.text=value;
+          console.log(string);
+          options.text=string;
+        }
+                // work with key and value
+              }
+            }
+            
+            var dropdown = document.getElementById("notifications");
+            
+            options.classList.add("dropdown-item");
+            optionSubject.classList.add("dropdown-item");
+
+            options.style.color="black"
+            dropdown.appendChild(optionSubject);
+
+            dropdown.appendChild(options);
+            elem = document.createElement("hr");
+            dropdown.appendChild(elem);
+            {% endcomment %}
+          }
+          socket.onopen = function(e){
+
+            console.log("open",e)
+          }
+
+          socket.onerror = function(e){
+
+            console.log("error",e)
+          }
+          socket.onclose = function(e){
+
+            console.log("close",e)
+          } 
+        </script> 
+        <div id="banner" class="">
+          <img src="{% static 'library/Banner.png' %}" alt=""width=100%  height="150px" style="object-fit: cover;" >
+        </div>
+
+        
+        <nav id="mainNavbar" class="navbar navbar-expand-lg  py-0 px-5">
+          <a href="{%url 'camoes-home'%}" class="navbar-brand mr-5"><img src="{% static 'library/C.png' %}" width="50" height="50" alt=""> </a>
+          <div class="navbar-nav">
+            
+            <!-- <a class="nav-item nav-link" style="text-align:center;max-width: 80px;" href="">Requisitar<i class="fas fa-book"></i></a> -->
+            <a class="nav-item nav-link " href="{%url 'menu' %}" style="text-align:center;max-width: 80px;">Gestor <i class="fas fa-cogs"></i></a>
+            <a class="nav-item nav-link " href="{%url 'create-requisition' %}" style="text-align:center;max-width: 80px;">Requisitar <i class="fas fa-cogs"></i></a>
+            
+          </div>
+          <div class=" ml-5 container justify-content-start ">
+            <button  class="btn btn-outline-danger border border-white rounded-0 dropdown-toggle wrn-btn text-white" type="button" id="dropdownMenuButton"   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Palavra-chave
+            </button>
+            
+
+            
+            <form class="form-check form-check-inline"  action="{%url 'camoes-home'%}" method="get">
+              
+              <input type="text" class="form-control search-slt rounded-0" placeholder="Pesquisa Rápida" id="searchInput" name="search" type="text">
+              <a id="search-button" class="btn btn-danger wrn-btn rounded-right rounded-0" style="color:white" ><i class="fa fa-search"></i></a>
+            </form>
+            <a class="text-white" href="{% url 'form-book' %}"><b>Pesquisa avançada</b></a> 
+          </div>
+          
+          
+          <div class="navbar-nav ml-auto">
+            
+            <a class="nav-item nav-link" href="#"> <i class="fas fa-user"></i></a>
+            <div class="dropdown">
+              <button class="btn nav-item nav-link" value=''  type="button" id="notification-button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-bell"></i>
+              </button>
+              
+              
+              <div id="notifications"class="dropdown-menu dropdown-menu-right" aria-labelledby="notification-button" style="width: 400px;">
+                <div id="notifications-div" class="">
+                  <div style= "display:inline-block">
+                    <p class="m-2"  >Notificações (<b><span id="notification-number">0</span></b>)</p>
+                  </div>
+                  <div id="seeAllDiv"style= "display:none">
+
+                    <a href="{%url 'see-all'%}"class="btn btn-danger dropdown-item" >Ver todas   <i class="far fa-eye"style="color:gray"></i></a>
+                  </div>
+                  
+
+                </div>
+                
+                <hr>
+     
+              </div>
+              
+              
+              
+            </div>
+            
+          </div>
+        </nav>
+
+        <div id="message-display"></div>
+        {% if messages%}
+        {%for message in messages%}
+        <div class="alert alert-{{ message.tags}}">
+          {{message}}
+        </div>
+        {%endfor%}
+        {% endif %}
+        {% block content%}{%endblock%}
+        
+        <!-- Optional JavaScript -->
+        <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+        
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+      </body>
+
+      </html>

@@ -1,0 +1,195 @@
+{%extends "library/base.html"%}
+{% load my_tags %} 
+
+{%block content %}  
+<script>
+  // seeAuthors(){
+  //   console.log("seeAuthors");
+
+  // }
+  function cleanAuthor(){
+    var form=document.getElementById("filter");
+    var input = document.createElement("input");
+
+    input.setAttribute("type", "hidden");
+
+    input.setAttribute("name", "seeAuthor");
+
+    input.setAttribute("value", "5");
+    console.log("cleanAuthor");
+    //append to form element that you want .
+    form.appendChild(input);
+    form.submit();
+  }
+</script>
+<style>
+  .fake-anchor {
+    background:none!important;
+    border:none; 
+    padding:0!important;
+    /*border is optional*/
+    border-bottom:1px solid #444; 
+}
+</style>
+  <div class="container ml-0 mt-0">
+   
+   
+    {% if 'q' in request.GET %}
+    <p class="mb-0 mt-1 ml-2"><span class=font-weight-bold>Resultados para: </span>{%get_search%}</p>
+    {%endif%}
+    
+      <div id="leftBar" class= "float-left bg-white border  mt-2 mr-2" style="border-color: rgb(236, 234, 234);height: 1000px">
+        <div class="pl-2  " style="width: 100%; background-color: rgb(236, 234, 234);">
+        <p class="font-weight-bold mb-1">Refinar a sua pesquisa</p>
+        </div>
+        
+        <div class="pl-2">
+        <ul class="list-group  ">
+          <li class="list-unstyled">
+          <p style="display:inline-block" class="font-weight-bold mb-1">Autor</p>
+          <a onclick="cleanAuthor()"><span class="btn text-grey pl-0 pr-1   "style="font-weight:bold ;display:inline-block; color:#b30000"><i class="fas fa-window-close"></i></span></a>
+        </li>
+          <form id="filter"  method="GET">
+
+          {%for author in selectedAuthors%}
+          <div>
+            <label><input type="checkbox"  class="checkbox" name="checkAuthor" id="check" value ="{{author.pk}}" onclick="myFunction()"/> {{author.name}}</label>
+          </div>
+          {%endfor%}
+          {%for author in relatedAuthors%}
+          <div>
+            <label><input type="checkbox"  class="checkbox" name="checkAuthor" id="check" value ="{{author.pk}}" onclick="myFunction()"/> {{author.name}}</label>
+          </div>
+          {%endfor%}
+          {%for author in authors %}
+            <div>
+              <label><input type="checkbox"  class="checkbox" name="checkAuthor" id="check" value ="{{author.pk}}" onclick="myFunction()"/> {{author.name}}</label>
+            </div>
+          {%endfor%}
+          
+          <button id="seeAuthors"class="fake-anchor" type="submit" name="seeAuthor" value="{%add5 %}" onclick="seeAuthors()">Ver mais</button>
+          
+        </ul>
+
+        <ul class="list-group">
+          <p class="font-weight-bold mb-1 mt-1">Editora</p>
+          {%for publisher in selectedPublishers %}
+              
+            <div>
+                <label><input type="checkbox" class="checkbox" name="checkEditora" id="check" value ="{{publisher.pk}}" onclick="myFunction()"/> {{publisher.name}}</label>
+            </div>
+
+          {%endfor%}
+          {%for publisher in relatedPublishers %}
+
+          <div>
+              <label><input type="checkbox" class="checkbox" name="checkEditora" id="check" value ="{{publisher.pk}}" onclick="myFunction()"/> {{publisher.name}}</label>
+          </div>
+
+        {%endfor%}
+          {%for publisher in publishers %}
+
+            <div>
+                <label><input type="checkbox" class="checkbox" name="checkEditora" id="check" value ="{{publisher.pk}}" onclick="myFunction()"/> {{publisher.name}}</label>
+            </div>
+
+          {%endfor%}
+          {% if 'q' in request.GET %}
+          <input type="hidden"  name="q" value={%get_search%}>
+          {%endif%} 
+        
+        </ul>
+        <ul class="list-group">
+          <p class="font-weight-bold mb-1 mt-1">Ano</p>
+          {%for year in years %}
+          <div>
+            <label><input type="checkbox" class="checkbox" name="checkYear" id="check" value ="{{year}}" onclick="myFunction()"/> {{ year }}</label>
+          </div>
+          {%endfor%}
+        </ul>
+      </form>
+
+        </div>
+      </div>
+    </div>
+      <div id="mainPage" class="p-2">
+        {%for book in books%}
+          
+        <div class="card border border-danger mb-3 flex-row flex-wrap " >
+          <div class="card-header text-center border-0 d-flex align-items-center justify-content-center " style="width: 130px; ">
+            <p style="text-align:center;font-size: 20px;"><i class="fas fa-book fa-lg align-middle inline "style="color:#b30000;"></i></p>
+            <!-- <img src="//placehold.it/200" alt=""> -->
+          </div>
+          <div class="card-body">
+            <h5 class="card-title">{{book.title}}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">
+            {%for author in book.authors.all%}
+            
+            {{author.name}} 
+            
+            {%endfor%}
+          </h6>
+
+            <div class="row " >
+              <div class="col" style="max-width: 170px;" >
+            <h7 class="card-text mb-2 text-muted "><span class="font-weight-bold" style="color:#b30000;">Editora e Data: </span></h7>
+               
+            <h7 class="card-text mb-2 text-muted "><span class="font-weight-bold" style="color:#b30000;">Colecção:</span></h7>
+              </div>
+              <div class="col pl-0">
+                <h7 class="card-text mb-2 text-muted ">{{book.publisher.name}}, {{book.year}}</h7>
+               
+                <h6 class="card-text mb-2 text-muted ">{{book.classification}}</h6>
+                <h6 class="card-text mb-2 text-muted ">{{book.category}}</h6>
+
+
+              </div>
+              
+            </div>
+            
+          </div>
+          
+        </div>
+        {%empty%}
+            <div style=text-align:center>
+              <h1>Não foram encontrados resultados</h1>
+              <a class="btn btn-danger "style="margin:70px auto; display:block;width:140px  " href="{%url 'camoes-home'%}">Voltar Atrás</a>
+            </div>
+        {%endfor%}
+
+        {% if is_paginated %}
+
+        {% if page_obj.has_previous %}
+          <a class="btn btn-outline-danger mb-4" href="?page=1&{%url_replace%}">Primeira</a>
+          <a class="btn btn-outline-danger mb-4" href="?page={{ page_obj.previous_page_number }}&{%url_replace%}"><i class="fas fa-angle-left fa-lg"></i></a>
+        {% endif %}
+  
+        {% for num in page_obj.paginator.page_range %}
+          {% if page_obj.number == num %}
+            <a class="btn btn-danger mb-4" href="?page={{ num }}&{%url_replace%}">{{ num }}</a>
+          {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+            <a class="btn btn-outline-danger mb-4" href="?page={{ num }}&{%url_replace%}">{{ num }}</a>
+          {% endif %}
+        {% endfor %}
+  
+        {% if page_obj.has_next %}
+          <a class="btn btn-outline-danger mb-4" href="?page={{ page_obj.next_page_number }}&{%url_replace%}"><i class="fas fa-angle-right fa-lg"></i></a>
+          <a class="btn btn-outline-danger mb-4" href="?page={{ page_obj.paginator.num_pages }}&{%url_replace%}">Última</a>
+        {% endif %}
+  
+      {% endif %}
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+<script>
+console.log("hello from index")
+console.log({{nShowAuthors}})
+</script>
+{% endblock content%}

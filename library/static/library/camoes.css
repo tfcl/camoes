@@ -1,8 +1,13 @@
 @font-face {
 
-  color: red;
-  font-size: 1000px;
-}
+   
+    font-family: myFirstFont;
+    src: url(font.otf);}
+
+#filterReq{
+  width: 120px;
+
+} 
     #mainNavbar .redFont {
       font-size: 30px;
 
@@ -13,6 +18,7 @@
    
 }
 
+.title
 .input-group.md-form.form-sm.form-1 input{
   border: 1px solid #bdbdbd;
   border-top-right-radius: 0.25rem;
@@ -72,7 +78,7 @@
   height: 10px;
 }
 .row-width{
-  width: 150px;
+  width: 200px;
 }
   
   
@@ -154,3 +160,57 @@
     margin-bottom: 5px;
     font-weight: bold;
   }
+
+/* Novo */
+
+.title{
+
+margin-top: 15px;
+color: #b30000;
+font-weight: 400;
+margin-bottom: 30px;
+
+
+}
+.subtitle{
+  color: #b55;
+
+}
+.warning-display{
+  width: 100%;
+  background-color: #ff9191;
+  color: white;
+  font-weight: bold;
+  border-radius: 2.5px;
+  margin: 0 15px 0 15px;
+}
+
+.warning-display p{
+  margin-left:2px ;
+  margin-bottom: 0.2px;
+  padding: 2.5px 0 2.5px 0;
+}
+
+.btn-normal{
+  background-color: #b30000;
+  color: white !important;
+}
+
+.btn-normal:hover{
+  background-color: white;
+  border-color: #b30000;
+  color: #b30000!important;
+
+}
+.b-r{
+
+  font-weight: bold;
+  color: #b30000;
+
+}
+
+
+td{
+  margin-left: 15px;
+
+}

@@ -1,68 +1,328 @@
 
 {%extends "library/base.html"%}
-{% load my_tags %}  
-{%block content %}        
+{% load my_tags %} 
+{% load static %} 
+{%block content %}  
+
+<head>
+
+	
+	
+
+</head>
+
+<style>
+	#overlay {
+		position: fixed;
+		display:none;
+		width: 600px;
+		height: 400px;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background-color: white;
+		z-index: 2;
+		
+		margin: auto;
+
+		border-style: solid;
+		border-color: #b30000;
+		padding:25px;
+		border-radius: 15px;
+	}
+	
+	
+	
+	
+</style>
+
+
+
+<div id="overlay" ></div>
+
 <div class="container mt-2">
-                <h1  style="font-family: myFirstFont; text-transform:uppercase; color: #009900; ">Requisitar Livro</h1>
-                <img   src="imgs/hrtop.png" alt="" width="100%">
-                <!-- <hr class="m-0 mb-2" style="border:1.5px solid #79790b; border-radius: 5px;"> -->
-                
-                <form method="GET">
-                      {%if id%}
-                      
-                      <div class="form-group">
+	
+	<h1 class="title">Requisitar livro</h1>
+	<form>
 
-                        Nome: {{id.user.username}}
-                        <input type="hidden"  name="id" value={{id.number}}>
-                      {%else%}
-
-                      
-                      <div class="form-group">
-                        <label for="utilizador">Utilizador:</label>
-                      
-                        <input name="id" type="text" class="form-control" id="utilizador" placeholder="Insira o número de aluno">
-                      
-                      <button type="submit" style="background-color: #b30000;" value= "submit"class="btn text-white mt-1">Selecionar Aluno</button>
-                      
-                      </form>
-                      {%endif%}
-                      
-                    </div>
-                    <div class="form-group">
-                        <label for="livro">Livro:</label>
-                        {%for book in checkedBooks%}
-                          {{book.Book}}
-                          <p>{{book.title}}</p>
-                          <input type="hidden"   name="book" value={{book.title}}>
-                        {%endfor%}
-                        <input type="text" name="book" class="form-control" id="livro"   placeholder="Insira o código do livro">
-                        
-                      </div>
-                      <div class="form-group">
-                        <label for="livro">Adicionar livro</label>
-                        <button type="submit" style="background-color: #b30000;" class="btn text-white"><i class="fas fa-plus"></i> </button>
-                        
-                      </div>
-                    </form>
-
-                      {%if checkedBooks%}
-                      <form method='GET' id="form1"> 
-                        <!-- {% csrf_token %} -->
-                          <input type="hidden"  name="id" value={{id.number}}>
-                          {%for book in checkedBooks%}
-                            <input type="hidden"  name="book" value={{book.title}}>
-                          {%endfor%}
-
-                          <input type="hidden"  name="Confirm" value=True>
-
-                      <button class="btn text-white" style="background: #b30000;"  type="submit" form="form1" value="Submit">Confirmar</button>
-                      
-                      {%endif%}
-                      </form>
+		<div class="form-group row user-div">
+			<label class="col-sm-2 col-form-label" style="width:100%"id="form-user" for="InputUser">Numero de aluno:</label>
+			<div class="col-sm-10">
+				<input type="email" class="form-control" id="InputUser"  placeholder="Insira numero de aluno">
+			</div>
+		</div>
 
 
-                  
 
-            </div>
-          
+		<a class="btn  btn-normal" id="check_user">Confirmar</a>
+		<div class="form-group">
+
+
+		</div>
+
+		<div class="form-group">
+
+
+		</div>
+		
+	</form>
+	<div id="add-book"></div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script src= "https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"> </script> 
+<script>
+	var numberBooks=0;
+	var arrayBooks=[];
+	$( "#check_user" ).click(function() {
+		$("div").remove(".warning-display");
+		
+		var user = $("#InputUser").val();
+		console.log(user);
+		if (user){
+			$.ajax({
+				type: 'GET',
+				url: "{% url 'ajax-check-user' %}",
+				data:{ user:user},
+
+				success: function(data){
+					console.log(data)
+					if (data == -1||data==0||data == 1){
+						
+						if(data==-1){
+
+							$('.user-div').prepend('<div class="warning-display" ><p>O utilizador não existe</p></div>');
+
+						}
+						
+						else if (data==0){
+
+							$('.user-div').prepend('<div class="warning-display" ><p>O utilizador atingiu o limite de requisições</p></div>');
+
+						}
+						else if (data==1){
+							$('.user-div').prepend('<div class="warning-display" ><p>O utilizador está bloqueado</p></div>');
+							
+
+						}
+
+					}
+					else{
+						$("form").remove();
+						
+						$("#add-book").html(data);
+
+					}
+
+				}
+			})
+		}
+		else{
+
+			
+			$('.user-div').prepend('<div class="warning-display" ><p>Campo Obrigatório</p></div>');
+			
+		}
+	});  
+
+	$(document).on('click', '#btn-book', function(){
+		var type=""
+		var type1=$('#inputType').find(":selected").val();
+		var type2=$('input[name=inputRadio]:checked', '#form-item').val();
+
+		if(type1 === "book" ){
+			if(type2==="option1"){
+				type="b1"
+			}
+			else if (type2==="option2"){
+				type="b2"
+
+			}
+			
+
+		}
+		else if(type1==="magazine"){
+			if(type2==="option1"){
+				type="m1"
+			}
+			else if (type2==="option2"){
+				type="m2"
+
+			}
+			
+
+		}
+		console.log(type);
+
+
+		var book=$("#InputBook").val();
+		$('#InputBook').val(""); 
+		$("div").remove(".warning-display");
+
+		
+
+
+		if(book){
+			if(type1!=="-1"){
+				console.log(parseInt($("#allowed").val()));
+				if(numberBooks<parseInt($("#allowed").val())){
+
+					console.log(arrayBooks.includes(book));
+					if(!arrayBooks.includes(parseInt(book))){
+
+						console.log('esta no limite');
+						$.ajax({
+							type: 'GET',
+							url: "{% url 'ajax-add-book' %}",
+							data:{ book:book,
+								type:type,
+								
+								
+							},
+
+							success: function(data){
+								data = JSON.parse(data);
+
+								console.log(data)
+								if (data == -1 || data== 0 ){
+									if(data == -1){
+
+										$('.book-div').prepend('<div class="warning-display" ><p>O livro não existe</p></div>');
+
+									}
+									else if(data==0){
+										$('.book-div').prepend('<div class="warning-display" ><p>O livro não está disponivel</p></div>');
+
+									}
+
+								}
+								else{
+									
+
+									numberBooks++;
+									
+									var htmlString='<div class="d-flex flex-row mb-2" ><input type="hidden" id="pk" name="book" value='+data.item_pk+'><a class="btn-delete btn"style="font-size: 20px;width: 50px;color: #b30000;"><i class="far fa-trash-alt" href="#"></i></a><p class="" style="    width: 70px;float: right;text-align: right;margin: auto;">'+data.identifier+'</p><p class="flex-grow-1" style="margin-left: 6.5%!important;margin: auto;">'+data.book+'</p></div>';
+									
+									$("#show-books").append(htmlString);
+									arrayBooks.push(data.item_pk);
+									console.log(arrayBooks);
+
+
+
+
+
+
+									console.log(data.book);
+
+								}
+								
+							}
+						})
+					}
+					else{
+						$('.book-div').prepend('<div class="warning-display" ><p>Já inseriu esse livro</p></div>');
+
+					}
+				}
+				else{
+					$('.book-div').prepend('<div class="warning-display" ><p>Atingiu o numero maximo de requisições</p></div>');
+					console.log('passou o limite');
+
+				}
+
+
+			}
+			else{
+				$('#form-item').prepend('<div class="warning-display" ><p>Campo Obrigatório</p></div>');
+
+
+			}
+		}
+		else{
+
+			$('.book-div').prepend('<div class="warning-display" ><p>Campo Obrigatório</p></div>');
+
+		}
+
+
+	});
+
+	$( "#btn-book" ).click(function() {
+		
+
+	});
+
+
+	$(document).on('click', '.btn-delete', function(){
+
+		var parentDiv=$(this).parent('div');
+
+		numberBooks--;
+		console.log(parentDiv.find(':input').val());
+
+		const isEqual = (element) => element == parentDiv.find(':input').val();
+
+		console.log(arrayBooks.findIndex(isEqual));
+
+		delete arrayBooks[arrayBooks.findIndex(isEqual)];
+		console.log(arrayBooks);
+		$("div").remove(".warning-display");
+		$(this).parent('div').remove();
+
+	});
+
+	$(document).on('click', '#btn-finish', function(){
+		$("div").remove(".warning-display");
+
+		console.log("finish");
+		if(numberBooks==0){
+
+			$('.book-div').prepend('<div class="warning-display" ><p>Tem que inserir pelo menos um livro</p></div>');
+
+
+		}
+		
+		
+		
+		else{
+
+
+			$.ajax({
+				type: 'GET',
+				url: "{% url 'ajax-confirm-requisition' %}",
+				
+
+				success: function(data){
+
+					$("#overlay").html(data);
+					$("#overlay").css("display", "block");
+				} })
+		}     
+		
+		
+		
+
+
+	});
+</script>          
 {% endblock content%}

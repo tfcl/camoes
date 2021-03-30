@@ -1,0 +1,96 @@
+{% load spacify %} 
+
+     <input type="hidden" id="allowed" value={{allowedRequisitions}}>
+     <input type="hidden" id="userName" value={{user1.profile.name|spacify}}>
+     <input type="hidden" id="deadline" value={{deadline}}>
+     <input type="hidden" id="email" value={{user1.email}}>
+
+  <form  action="{% url 'create-requisition' %}" method="POST">
+  {% csrf_token %}
+     <input type="hidden" id="userPk" name="user"value={{user1.pk}}>
+
+     
+
+
+
+    <div class="form-group row">
+    <p class="col-sm-2 col-form-label" style="width:100%; font-weight:bold">Utilizador :</p>
+    <div class="col-sm-10">
+          <p class="col-sm-2 col-form-label" style="width:100%">{{user1.profile.name}}</p>
+
+    </div>
+  </div>
+    
+   <h2 class="subtitle">Lista de livros</h2>  
+
+  <div id="show-books"></div>
+ 
+    
+<!--
+    <div class="d-flex flex-row " >
+    
+    
+    <a class="btn"style="font-size: 20px;width: 50px;color: #b30000;"><i class="far fa-trash-alt" href="#"></i></a>
+    
+    <p class="" style="    width: 70px;float: right;text-align: right;margin: auto;">1</p>
+
+    
+    <p class="flex-grow-1" style="margin-left: 6.5%!important;margin: auto;">hjhjhjhjhjhjhjhjhjhjhj</p>
+    
+    </div>
+
+-->
+  <div id="form-item" class="form-group row ">
+    <label class="col-sm-2 b-r col-form-label " style="color:#b30000;padding-left: 2.8%;width:100%" >Tipo de conteudo:</label>
+    <div class="form-row col-md-10" >
+      <div class="form-group col-md-3 mr-2">
+        <select id="inputType" class="form-control">
+          <option value="-1"selected>Selecione</option>
+          <option value="book">Livro</option>
+          <option value="magazine">Revista</option>
+        </select>
+      </div>
+      <div class="form-check form-check-inline col-md-1 ">
+          <input class="form-check-input" type="radio" name="inputRadio" id="inputTypeRadio1" value="option1" checked>
+          <label class="form-check-label" for="inputTypeRadio1">
+            Doada
+          </label>
+        </div>
+        <div class="form-check form-check-inline col-md-1">
+          <input class="form-check-input" type="radio" name="inputRadio" id="inputTypeRadio2" value="option2">
+          <label class="form-check-label" for="inputTypeRadio2">
+            Comprado
+          </label>
+        </div>
+              
+    </div>
+  </div>
+
+
+  <div class="form-group row book-div">
+    <label class="col-sm-2 col-form-label " style="color:#b30000;padding-left: 2.8%;width:100%" id="form-book" for="InputBook"><i class="fas fa-plus"></i></label>
+    <div class="col-sm-10">
+      <input class="form-control" id="InputBook"  placeholder="Insira Código do Livro">
+    </div>
+  </div>
+
+
+
+
+  <div style="display: flex; justify-content: center;">
+  <a class="btn  btn-normal mr-1" id="btn-book" >Adicionar Livro</a>
+  <a  class="btn  btn-normal ml-1" id="btn-finish" style="width:132px" >Confirmar</a>
+  </div>
+  <div class="form-group">
+
+
+  </div>
+
+  <div class="form-group">
+
+
+  </div>
+  
+</form>
+
+<script src= "https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"> </script> 

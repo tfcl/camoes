@@ -1,0 +1,2 @@
+days_limit=15
+max_requisitions=3

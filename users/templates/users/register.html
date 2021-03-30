@@ -1,16 +1,18 @@
 {%extends "library/base.html"%}
 
-{%block content %}  
-    <div class="content-section">
+{%block content %}
+  
+    <div class="container">
         <form method="POST">
             {% csrf_token %}
             <fieldset class="form-group">
-                <legend class="border-bottom mb-4">Registar</legend>
-                {{form.as_p}}
-                {{form1.as_p}}
+                <h1 class=" mb-4 title">Registar</h1>
+                <table>{{ form.as_table }}
+               
+                {{form1.as_table}}</table>
             </fieldset>
             <div class="form-group">
-                <button class="btn btn-outline-danger" type="submit">Registar</button>
+                <button class="btn btn-normal" type="submit">Registar</button>
             </div>
         </form>
         <div class="border-top pt-3">

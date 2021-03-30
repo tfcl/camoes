@@ -1,6 +1,7 @@
-from datetime import datetime
+from library.models import Type
+from datetime import datetime, timezone
 from datetime import timedelta  
-
+import json
 
 from django.core.mail import send_mail
 
@@ -10,16 +11,23 @@ from. models import Requisition,Notification
 from django.contrib import messages
 from django.views.generic import ListView,TemplateView,CreateView,UpdateView,DetailView
 from users.models import Profile
-from library.models import Book
+from library.models import Book,Item
+
 from django.contrib.auth.models import User
 from django.shortcuts import redirect
 from .forms import RequisitionCreateForm
+
 import logging
 from django.db.models import Q
 from functools import reduce
 import operator
-
+from django.http import HttpResponse
 logger = logging.getLogger('django')
+from django.http import JsonResponse
+from django.core import serializers
+
+from .constants import days_limit,max_requisitions
+
 
 
 class RequisitionListView(ListView):
@@ -104,182 +112,48 @@ class RequisitionListView(ListView):
             context.update({'orderBy':'recent'})
             
         return context
-class RequisitionView(TemplateView):
-    template_name='requisition/requisition.html'
-    def dispatch(self, request, *args, **kwargs):
-        query=self.request.GET.get('Confirm')
 
-        if query:
-            
-            user=self.request.GET.get('id')
-            books=self.request.GET.getlist('book')
-
-            #logging.debug(user)
-            #logging.debug(books)
-
-            self.request.session['user']=user
-            self.request.session['books']=books
-            return redirect('confirm-requisition')
-
-            #logging.debug("oii")
-        return super(RequisitionView, self).dispatch(request, *args, **kwargs)
-    def get_context_data(self, **kwargs):
-        
-        self.request.session['teste']='teste'
-
-        
-        context = super(RequisitionView, self).get_context_data(**kwargs)
-        control=False
-       
-        #checkedBooks=context['checkedBooks']
-        #logging.debug(context)
-        checkedBooks=[]
-        users=User.objects.all()
-        
-        
-        query=self.request.GET.get('id')
-        booksQuery=self.request.GET.getlist('book')
-        lengh=len(booksQuery)
-
-        for i, book in enumerate(booksQuery):
-            if i != lengh-1:
-                checkedBooks.append(book)
-            
-        #logging.debug(checkedBooks)
-        
-        if query:
-            userSelected=Profile.objects.get(number=query).user
-            requisitionCount=Requisition.objects.filter(user=userSelected).count()
-            print(requisitionCount)
-            if Profile.objects.filter(number=query).exists() and requisitionCount<=3:
-                if query and not booksQuery:
-                    messages.success(self.request , f'{query} é um utilizador válido !')
-                context.update({
-                    'id':Profile.objects.get(number=query)
-                })
-
-            else:
-                messages.warning(self.request, f'{query} não é um utilizador válido !') 
-        if not query and booksQuery:
-               messages.warning(self.request, f'Tem que indicar um utilizador')
-
-        if 'id' in context:
-            if booksQuery :
-                if Book.objects.filter(title=booksQuery[-1]).exists():
-                    if Book.objects.get(title=booksQuery[-1]).status!="Unavailable":
-                        control=True
-                    else:
-                        control=False
-                if Book.objects.filter(title=booksQuery[-1]).exists() and control and requisitionCount+lengh<=3:
-                    
-                    checkedBooks.append(Book.objects.get(title=booksQuery[-1]))
-                    
-                    
-
-                    context.update({
-                        'checkedBooks':checkedBooks
-                })
-                    messages.success(self.request, f'Livro Válido')
-                else:
-
-                    print(booksQuery)
-
-                    if requisitionCount>=3:
-                        messages.warning(self.request, f'Atingiu o numero máximo de requisições')
-                    elif Book.objects.get(title=booksQuery[-1]).status=="Unavailable":
-                        messages.warning(self.request, f'Livro indisponivel de momento')
-                    else:
-                        messages.warning(self.request, f'Livro inválido')
-                    
-                    context.update({
-                        'checkedBooks':checkedBooks
-                    })
-               
-        # for book in context['checkedBooks']:
-        #     #logging.debug(book)
-            
-        return context
 class  RequisitionDetailView(DetailView): 
     model = Requisition
     template_name="requisition/requisition_details.html"
 
-class RequisitionCreateView(CreateView):
-    model = Requisition
-    
-    form_class=RequisitionCreateForm
- 
-    def add_days(self):
-        logging.warning("dsdsfdsfdsfdsfdsfdsfdsfdsfdsfgsgdfdsdsfadsdsfffffff")
-        logger.error("dfssssssssssssssssssss")
-        day=datetime.now() + timedelta(days=15) 
-        day=day.strftime('%d-%m-%Y')
 
-        return day
-    def create_email(self,BookName,date):
-        logger.warning(date)
-        date=str(date)
-        return "Acabou de requisitat o livro : "+BookName+"a data limite de entrega é "+date 
-    def form_valid(self, form):
-        logging.debug("form_valid")
-        
-        send_mail("Nova Requisição",self.create_email(form.cleaned_data['book'].title,self.add_days()),"tlourenco9l@gmail.com",[form.cleaned_data['user'].email],fail_silently= False)
-
-        #form.instance.end_date=self.add_days()
-        self.object = form.save()
-
-
-        messages.success(self.request, f'Sucesso')
-        if len(self.request.session.get('books'))>1:
-            del self.request.session['books'][-1]
-            self.request.session.modified = True
-            
-            #logging.debug(Requisition.objects.all().count())
-            return redirect('confirm-requisition')
-        #logging.debug(Requisition.objects.all().count())
-        return redirect('/library')
-
-        
-    def get_initial(self):
-        initial = super().get_initial()
-        
-        initial['book']=1
-        return initial
-    def get_context_data(self, **kwargs):
-        
-        context = super(RequisitionCreateView, self).get_context_data(**kwargs)
-        user1=self.request.session.get('user')
-        print("user........"+user1)
-
-         
-        book=self.request.session.get('books')[-1]
-
-        print(Book.objects.filter(title=book))
-        selectedBook=Book.objects.get(title=book)
-        selectedUser=Profile.objects.get(number=user1)
-        
-        context={'book':selectedBook, 'user':selectedUser,'end':self.add_days()}
-        context['form']=RequisitionCreateForm
-        context['form']= RequisitionCreateForm(initial={'book': selectedBook.pk, 'user':selectedUser.user.pk})
-
-        #context['form'].fields['book'].initial = selectedBook.pk
-        
-        
-        return context
 
 class RequisitionUpdateView(UpdateView):
     model = Requisition
-    fields = ['state']
-    template_name_suffix = '/requisition_update'
+    fields = ['state','deliverDate']
+    template_name = 'requisition/requisition_update.html'
+
+    def get_context_data(self, **kwargs):
+
+        context = super(RequisitionUpdateView, self).get_context_data(**kwargs)
+
+
+        requisition=self.object
+        user=self.object.user
+        profile=Profile.objects.get(pk=self.object.user.pk)
+
+        context.update({
+            
+            'profile':profile,
+            'requsition':requisition
+
+        })
+        print(context)
+        return context
+
+
+
     def form_valid(self, form):
         self.object = form.save()
-        Book.objects.filter(pk=self.object.book.pk).update(status='Available')
         messages.success(self.request, f'Livro Entregue')
 
         return redirect('requisition-home')
     def get_initial(self):
         initial = super().get_initial()
         
-        initial['state']="Delivered"
+        initial['state']="D"
+        initial['deliverDate']=datetime.now()
         return initial
 
 def seeAll(request):
@@ -291,14 +165,135 @@ def seeAll(request):
 
 
 
-def cancelRequisition(request):
 
+def requisitionEntry(request):
+    if request.method=='GET':
+        return render(request,'requisition/requisition.html')
+
+    if request.method == 'POST':
+        
+        user=User.objects.get(id=request.POST['user'])
+        
+        print("POSTTTTTTTT")
+        print(request.POST['user'])
+        books=request.POST.getlist('book')
+        for book in books:
+            itemObject=Item.objects.get(id=book)
+            new=Requisition.create(user,itemObject)
+            new.save()
+            
+        return redirect('requisition-home')
+
+
+def add_days():
+
+    day=datetime.now() + timedelta(days=days_limit) 
+    day=day.strftime('%d-%m-%Y')
+
+    return day
+#ajax
+
+
+
+def checkUser(request):
     
-    del request.session['books'][-1]
-    request.session.modified = True 
-    messages.warning(request, f'Livro descartado') 
+    inputUser= request.GET.get("user")
+   #verificar também se está bloqueado
+    if User.objects.filter(username=inputUser).exists():
+        
+        user=User.objects.get(username=inputUser)
+        allowedRequisitions=max_requisitions-user.profile.active_requisitions
+        if user.profile.state=='A':
+            if allowedRequisitions>0:
+                print('allowed requisitions')
+                
+                print(allowedRequisitions)
+                
+                return render(request, 'requisition/ajax/add_books.html', {'user1':user,'allowedRequisitions':allowedRequisitions,'deadline':add_days()})
+            else:
+                return HttpResponse(0)
+        else:
+            return HttpResponse(1)
 
-    if len(request.session.get('books'))==0:
-        return redirect('camoes-home')
+    else:
+        return HttpResponse(-1)
 
-    return redirect('confirm-requisition')
+
+def addBookCopy(request):
+    inputBook=request.GET.get("book")
+    print(inputBook)
+
+    if Book.objects.filter(id=inputBook).exists():
+        if Book.objects.get(id=inputBook).state!='U':   
+        
+            book=Book.objects.get(id=inputBook)
+        
+        
+        
+            return JsonResponse(serializers.serialize('python', [book,]),safe=False)
+        else:
+            return HttpResponse(0)
+    else:
+        return HttpResponse(-1)
+
+def seeNotification(request, pk):
+    print("from seeNotification")
+    
+    print(pk)
+
+    notification=Notification.objects.get(pk=pk)
+
+    notification.isRead=True
+    notification.save(update_fields=["isRead"])
+    return redirect('detail-requisition', notification.requisition.pk)
+
+def addBook(request):
+    inputBook=request.GET.get("book")
+    inputType=request.GET.get("type")
+    typeFilter=None
+    print("view, addBook")
+    print(inputType)
+
+    if inputType =="b1":
+        typeFilter=1
+    elif inputType=="b2":
+        typeFilter=2
+
+    elif inputType=="m1":
+        typeFilter=3
+
+    elif inputType=="m2":
+        typeFilter=4
+
+
+    if  Item.objects.filter(identifier=inputBook).filter(type=typeFilter).exists():
+           
+        
+        book=Item.objects.filter(identifier=inputBook).get(type=typeFilter)
+        
+        print("teste")
+        if book.content_object.state!="U":
+
+            data={
+                "identifier":book.__str__(),
+                "book":book.content_object.title,
+                "item_pk":book.pk
+
+            }
+            
+            dataJson = json.dumps(data)
+
+            return JsonResponse(dataJson,safe=False)
+        else:
+            return HttpResponse(0)
+    else:
+        return HttpResponse(-1)
+        
+
+
+
+def confirmRequisition(request):
+
+    return render(request, 'requisition/ajax/confirm.html', {})
+
+        

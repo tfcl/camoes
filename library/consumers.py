@@ -29,12 +29,15 @@ class notificationConsumer(WebsocketConsumer):
             self.channel_name
         )
 
-        for notification in Notification.objects.filter(isRead=False):
-            self.send(text_data=json.dumps({
-            'message': notification.message,
-            'subject':notification.subject,
-            'requisition':notification.requisition.pk
-        }))
+        if Notification.objects.filter(isRead=False).exists():
+            self.send(text_data=json.dumps({'message':True}))
+
+        # for notification in Notification.objects.filter(isRead=False):
+        #     self.send(text_data=json.dumps({
+        #     'message': notification.message,
+        #     'subject':notification.subject,
+        #     'requisition':notification.requisition.pk
+        # }))
         
 
         

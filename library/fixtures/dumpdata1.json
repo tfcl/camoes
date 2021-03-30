@@ -1,36 +1,74 @@
 [
 
-{"model": "library.author", "pk": 1, "fields": {"name": "Jose ssaramenf", "deathYear": 1999, "birthYear": 2000}},
-{"model": "library.author", "pk": 2, "fields": {"name": "Fernando Pessoa", "deathYear": 1999, "birthYear": 2000}},
-{"model": "library.author", "pk": 3, "fields": {"name": "Alberto Serafim", "deathYear": 1999, "birthYear": 2000}},
+
+{"model": "library.author", "pk": 1, "fields": {"name": "Desconhecido"}},
+
+{"model": "library.author", "pk": 2, "fields": {"name": "Jose ssaramenf", "deathYear": 1999, "birthYear": 2000}},
+{"model": "library.author", "pk": 3, "fields": {"name": "Fernando Pessoa", "deathYear": 1999, "birthYear": 2000}},
+{"model": "library.author", "pk": 4, "fields": {"name": "Alberto Serafim", "deathYear": 1999, "birthYear": 2000}},
+{"model": "library.author", "pk": 5, "fields": {"name": "Fernando Serafim", "deathYear": 1999, "birthYear": 2000}},
+{"model": "library.author", "pk": 6, "fields": {"name": "Jose Serafim", "deathYear": 1999, "birthYear": 2000}},
 
 
-{"model": "library.publisher", "pk": 1, "fields": {"name": "Caminho", "adress": "Lisboa"}},
-{"model": "library.publisher", "pk": 2, "fields": {"name": "Rosa dos ventos", "adress": "Porto"}},
-{"model": "library.publisher", "pk": 3, "fields": {"name": "oioi", "adress": "Coimbra"}},
-{"model": "library.publisher", "pk": 4, "fields": {"name": "Barzilia", "adress": "Guarda"}},
-{"model": "library.publisher", "pk": 5, "fields": {"name": "UMCS", "adress": "Famalicão"}},
-{"model": "library.publisher", "pk": 6, "fields": {"name": "IPG", "adress": "Lublin"}},
+{"model": "library.publisher", "pk": 1, "fields": {"name": "Desconhecida", "adress": ""}},
+
+{"model": "library.publisher", "pk": 2, "fields": {"name": "Caminho", "adress": "Lisboa"}},
+{"model": "library.publisher", "pk": 3, "fields": {"name": "Rosa dos ventos", "adress": "Porto"}},
+{"model": "library.publisher", "pk": 4, "fields": {"name": "oioi", "adress": "Coimbra"}},
+{"model": "library.publisher", "pk": 5, "fields": {"name": "Barzilia", "adress": "Guarda"}},
+{"model": "library.publisher", "pk": 6, "fields": {"name": "UMCS", "adress": "Famalicão"}},
+{"model": "library.publisher", "pk": 7, "fields": {"name": "IPG", "adress": "Lublin"}},
 
 
 
-{"model": "library.book", "pk": 1, "fields": {"title": "o outono é lindo", "stock": "1", "year": 2003, "classification": "PQ2003", "isbn": "4544343", "status": "Disponivel","publisher":1,"authors":[1]}},
-{"model": "library.book", "pk": 2, "fields": {"title": "Um dois tres", "stock": "12", "year": 2005, "classification": "PQ2003", "isbn": "4544343", "status": "Disponivel","publisher":2,"authors":[2]}},
-{"model": "library.book", "pk": 3, "fields": {"title": "Bom dia", "stock": "1", "year": 2003, "classification": "PQ2003", "isbn": "4544343", "status": "Disponivel","publisher":3,"authors":[1,2]}},
-{"model": "library.book", "pk": 4, "fields": {"title": "3030", "stock": "1", "year": 2004, "classification": "PQ2003", "isbn": "4544343", "status": "Disponivel","publisher":4,"authors":[1,2]}},
-{"model": "library.book", "pk": 5, "fields": {"title": "o odio da", "stock": "1", "year": 2007, "classification": "PQ2003", "isbn": "4544343", "status": "Disponivel","publisher":5,"authors":[1,2]}},
-{"model": "library.book", "pk": 6, "fields": {"title": "Agnieszka", "stock": "1", "year": 2000, "classification": "PQ2003", "isbn": "4544343", "status": "Disponivel","publisher":6,"authors":[1,2]}},
-{"model": "library.book", "pk": 7, "fields": {"title": "OS TAIS", "stock": "1", "year": 2000, "classification": "PQ2003", "isbn": "4544343", "status": "Disponivel","publisher":1,"authors":[1,2]}},
-{"model": "library.book", "pk": 8, "fields": {"title": "ola ola", "stock": "1", "year": 2005, "classification": "PQ2003", "isbn": "4544343", "status": "Disponivel","publisher":2,"authors":[1,2]}},
-{"model": "library.book", "pk": 9, "fields": {"title": "odio", "stock": "1", "year": 2003, "classification": "PQ2003", "isbn": "4544343", "status": "Disponivel","publisher":3,"authors":[1,2]}},
-{"model": "library.book", "pk": 10, "fields": {"title": "outono", "stock": "1", "year": 2003, "classification": "PQ2003", "isbn": "4544343", "status": "Disponivel","publisher":4,"authors":[1,2]}},
-{"model": "library.book", "pk": 11, "fields": {"title": "3tres", "stock": "1", "year": 2003, "classification": "PQ2003", "isbn": "4544343", "status": "Disponivel","publisher":5,"authors":[1,2]}},
-{"model": "library.book", "pk": 12, "fields": {"title": "tres", "stock": "1", "year": 2003, "classification": "PQ2003", "isbn": "4544343", "status": "Disponivel","publisher":6,"authors":[1,2]}},
-{"model": "library.book", "pk": 13, "fields": {"title": "ola", "stock": "1", "year": 2003, "classification": "PQ2003", "isbn": "4544343", "status": "Disponivel","publisher":1,"authors":[1,2]}},
-{"model": "library.book", "pk": 14, "fields": {"title": "tá tudo", "stock": "1", "year": 2003, "classification": "PQ2003", "isbn": "4544343", "status": "Disponivel","publisher":1,"authors":[1,2]}},
-{"model": "library.book", "pk": 15, "fields": {"title": "o outono é lindo", "stock": "1", "year": 2003, "classification": "PQ2003", "isbn": "4544343", "status": "Disponivel","publisher":1,"authors":[3]}},
-{"model": "library.book", "pk": 16, "fields": {"title": "aiaiai como é", "stock": "1", "year": 2003, "classification": "PQ2003", "isbn": "4544343", "status": "Disponivel","publisher":4,"authors":[3]}},
-{"model": "library.book", "pk": 17, "fields": {"title": "o outono é legalize", "stock": "1", "year": 2005, "classification": "PQ2003", "isbn": "4544343", "status": "Disponivel","publisher":6,"authors":[3]}}
+{"model": "library.book", "pk": 1, "fields": {"title": "o outono é lindo", "stock": "1", "year": 2003, "classification": "PQ2003", "isbn": "4544343", "state": "Disponivel","publisher":1,"authors":[2]}},
+{"model": "library.book", "pk": 2, "fields": {"title": "Um dois tres", "stock": "12", "year": 2005, "classification": "PQ2003", "isbn": "4544343", "state": "Disponivel","publisher":2,"authors":[4]}},
+{"model": "library.book", "pk": 3, "fields": {"title": "Bom dia", "stock": "1", "year": 2003, "classification": "PQ2003", "isbn": "4544343", "state": "Disponivel","publisher":3,"authors":[2,3]}},
+{"model": "library.book", "pk": 4, "fields": {"title": "3030", "stock": "1", "year": 2004, "classification": "PQ2003", "isbn": "4544343", "state": "Disponivel","publisher":4,"authors":[2,3]}},
+{"model": "library.book", "pk": 5, "fields": {"title": "o odio da", "stock": "1", "year": 2007, "classification": "PQ2003", "isbn": "4544343", "state": "Disponivel","publisher":5,"authors":[2,3]}},
+{"model": "library.book", "pk": 6, "fields": {"title": "Agnieszka", "stock": "1", "year": 2000, "classification": "PQ2003", "isbn": "4544343", "state": "Disponivel","publisher":6,"authors":[2,3]}},
+{"model": "library.book", "pk": 7, "fields": {"title": "OS TAIS", "stock": "1", "year": 2000, "classification": "PQ2003", "isbn": "4544343", "state": "Disponivel","publisher":1,"authors":[2,3]}},
+{"model": "library.book", "pk": 8, "fields": {"title": "ola ola", "stock": "1", "year": 2005, "classification": "PQ2003", "isbn": "4544343", "state": "Disponivel","publisher":2,"authors":[2,3]}},
+{"model": "library.book", "pk": 9, "fields": {"title": "odio", "stock": "1", "year": 2003, "classification": "PQ2003", "isbn": "4544343", "state": "Disponivel","publisher":3,"authors":[2,3]}},
+{"model": "library.book", "pk": 10, "fields": {"title": "outono", "stock": "1", "year": 2003, "classification": "PQ2003", "isbn": "4544343", "state": "Disponivel","publisher":4,"authors":[2,3]}},
+{"model": "library.book", "pk": 11, "fields": {"title": "3tres", "stock": "1", "year": 2003, "classification": "PQ2003", "isbn": "4544343", "state": "Disponivel","publisher":5,"authors":[2,3]}},
+{"model": "library.book", "pk": 12, "fields": {"title": "tres", "stock": "1", "year": 2003, "classification": "PQ2003", "isbn": "4544343", "state": "Disponivel","publisher":6,"authors":[2,3]}},
+{"model": "library.book", "pk": 13, "fields": {"title": "ola", "stock": "1", "year": 2003, "classification": "PQ2003", "isbn": "4544343", "state": "Disponivel","publisher":1,"authors":[2,3]}},
+{"model": "library.book", "pk": 14, "fields": {"title": "tá tudo", "stock": "1", "year": 2003, "classification": "PQ2003", "isbn": "4544343", "state": "Disponivel","publisher":1,"authors":[2,3]}},
+{"model": "library.book", "pk": 15, "fields": {"title": "o outono é lindo", "stock": "1", "year": 2003, "classification": "PQ2003", "isbn": "4544343", "state": "Disponivel","publisher":1,"authors":[3]}},
+{"model": "library.book", "pk": 16, "fields": {"title": "aiaiai como é", "stock": "1", "year": 2003, "classification": "PQ2003", "isbn": "4544343", "state": "Disponivel","publisher":4,"authors":[3]}},
+{"model": "library.book", "pk": 17, "fields": {"title": "o outono é legalize", "stock": "1", "year": 2005, "classification": "PQ2003", "isbn": "4544343", "state": "Disponivel","publisher":6,"authors":[3]}},
+
+{"model": "library.category", "pk": 1, "fields": {"name":"SCIENCE AND KNOWLEDGE. ORGANIZATION. ", "udc": 0}},
+{"model": "library.category", "pk": 2, "fields": {"name":"PHILOSOPHY. PSYCHOLOGY", "udc": 1}},
+{"model": "library.category", "pk": 3, "fields": {"name":"RELIGION. THEOLOGY", "udc": 2}},
+{"model": "library.category", "pk": 4, "fields": {"name":"SOCIAL SCIENCES", "udc": 3}},
+{"model": "library.category", "pk": 5, "fields": {"name":"MATHEMATICS. NATURAL SCIENCES", "udc": 5}},
+{"model": "library.category", "pk": 6, "fields": {"name":"APPLIED SCIENCES. MEDICINE. TECHNOLOGY", "udc": 6}},
+{"model": "library.category", "pk": 7, "fields": {"name":"THE ARTS. RECREATION. ENTERTAINMENT. SPORT", "udc": 7}},
+{"model": "library.category", "pk": 8, "fields": {"name":"LANGUAGE. LINGUISTICS. LITERATURE", "udc": 8}},
+{"model": "library.category", "pk": 9, "fields": {"name":"GEOGRAPHY. BIOGRAPHY. HISTORY", "udc": 9}},
+
+{"model": "library.category", "pk": 10, "fields": {"name":"Physical planning. Regional, town and country planning. Landscapes, parks, gardens", "parentPk":7,"depth":1,"udc": 1}},
+{"model": "library.category", "pk": 11, "fields": {"name":"Architecture", "parentPk":7,"depth":1,"udc": 2}},
+{"model": "library.category", "pk": 12, "fields": {"name":"Plastic arts", "parentPk":7,"depth":1,"udc": 3}},
+{"model": "library.category", "pk": 13, "fields": {"name":"Drawing. Design. Applied arts and crafts", "parentPk":7,"depth":1,"udc": 4}},
+
+
+
+{"model": "library.category", "pk": 14, "fields": {"name":"General questions relating to both linguistics and literature. Philology", "parentPk":8,"depth":1,"udc": 0}},
+{"model": "library.category", "pk": 15, "fields": {"name":"Linguistics and languages", "parentPk":8,"depth":1,"udc": 1}},
+{"model": "library.category", "pk": 16, "fields": {"name":"Literature", "parentPk":8,"depth":1,"udc": 2}},
+
+
+
+{"model": "library.category", "pk": 17, "fields": {"name":"Prosody. Auxiliary sciences and sources of philology", "parentPk":14,"depth":2,"udc": 1}},
+{"model": "library.category", "pk": 18, "fields": {"name":"Rhetoric. The effective use of language", "parentPk":14,"depth":2,"udc": 8}},
+
+{"model": "library.category", "pk": 19, "fields": {"name":"Prosody: metre, rhythm, rhyme and verse pattern", "parentPk":17,"depth":3,"udc": 6}},
+{"model": "library.category", "pk": 20, "fields": {"name":"Auxiliary sciences and studies of philology", "parentPk":17,"depth":3,"udc": 7}}
+
+
 
 
 ]

@@ -57,7 +57,7 @@
 </style>
 <form id="filter"  method="GET">
 <div class=" m-2 ">
-<div class="grid-container">
+<div class="grid-container" style="">
   <div class="headerUser">
     <div class="input-group md-form form-sm form-2 pt-2 pb-2 pl-0 input-group-prepend "  >
     
@@ -119,7 +119,7 @@
       <label><input type="checkbox"  class="checkbox" name="filter" id="check" value ="d" onclick="filterRequisitions()"/> Atrasados</label>
       </ul>
       <ul class="list-group">
-      <label><input type="checkbox"  class="checkbox" name="filter" id="check" value ="og" onclick="filterRequisitions()"/> Por Entregar</label>
+      <label><input type="checkbox"  class="checkbox" name="filter" id="check" value ="OG" onclick="filterRequisitions()"/> Por Entregar</label>
     </ul>
     <ul class="list-group">
       <label><input type="checkbox"  class="checkbox" name="filter" id="check" value ="f" onclick="filterRequisitions()"/> Entregues</label>
@@ -130,120 +130,200 @@
   </div>
     
   </div>  
-  <div class="main1" style="margin-left: 15px;">
+</form>
+<div class="main1" style="margin-left: 15px;">
 
-  </form>
-  {%for requisition in requisitions%}
-      <div class="grid-card-container border border-danger card mb-3" style="height: 268px;">
-        <div class="card-title mb-0"><h4 class=" ml-3 mt-3 font-weight-bold mb-0 pt-1" style="color: #b30000;">{{requisition.book.title}}</h4></div>
-        <div class="card-image"style="height: 265px; ">
-          
-          <span style="left: 13%; font-size: 25px;color: #b30000; position:absolute;" class=" pr-2 pt-2" >
-            
-            
-              {% if requisition.state|stringformat:"s" == 'Delivered' %}
-               </span>
-              {%elif requisition.state|stringformat:"s" == 'Not Delivered' %}
-              <i class="fas fa-ellipsis-h"></i></span>
-              {%elif requisition.state|stringformat:"s" == 'Delayed' %}
-              <i class="fas fa-exclamation-circle"></i></span>
+    {% for requisition in requisitions %}
+    <!-- Delivered -->
 
-          
-              {%endif%}
-          <div style="display: table; margin: auto;width: 100%; height:100%;">
-          <div style=" margin:auto;display: table-cell;text-align: center; vertical-align: middle;">  
-            <h5 style="font-weight: bold;margin: 0; margin-bottom: 5px;" >Estado</h5>
-            
-            
-            {%ifequal requisition.state 'Not Delivered'%}
-            <p style="color: #b30000;font-weight: bold; font-size: large;" >Não Entregue</p style="color: #b30000;">
-              {%endifequal%}
-              {%ifequal requisition.state 'Delivered' %}
-            <p style="color: #b30000;font-weight: bold; font-size: large;" >Entregue</p style="color: #b30000;">  
+    {% if requisition.state|stringformat:"s" == 'D' %}
+  <div class="grid-card-container border border-danger card mb-3" style="">
+    <div class="card-image"style="">
+
+        <!-- icon de estado -->
+      <span style="left: 13%; font-size: 25px;color: #b30000; position:absolute;" class=" pr-2 pt-2" ></span>
+
+      <div style="display: table; margin: auto;width: 100%; height:100%;">
+        <div style=" margin:auto;display: table-cell;text-align: center; vertical-align: middle;">  
+          <!-- Texto de estado -->
+
+          <h5 style="font-weight: bold;margin: 0; margin-bottom: 5px;" >Estado</h5>
+          <p style="color: #b30000;font-weight: bold; font-size: large;">Entregue</p>
+
+        </div>    
+      </div>
+    </div>
+
+    <div class="card-main-left">
+      <table class="table table-borderless " >
+
+        <tr style="border-bottom: 1px solid rgb(241, 200, 200);">
+          <th class="text-right row-width" scope="row" style="">Livro:</th>
+          <td ><span class="b-r">{{requisition.item}} | </span>{{requisition.item.content_object.title}}</th>
+
+        </tr>          
+
+        <tr style="border-bottom: 1px solid rgb(241, 200, 200);">
+          <th class="text-right row-width" scope="row">Utlizador: </th>
+          <td ><span class="b-r">{{requisition.user.username}} |</span> {{requisition.user.profile.name}}</th>
+
+        </tr>
         
-        
-            {%endifequal%} 
-            {%ifequal requisition.state 'Delayed' %}
-            <p style="color: #b30000;font-weight: bold; font-size: large;" >Atrasado</p style="color: #b30000;">  
-        
-        
-            {%endifequal%}   
-            
+        <tr style="border-bottom: 1px solid rgb(241, 200, 200);">
+          <th class="text-right row-width" scope="row">Informação da requisição:</th>
+          <td >A Requisição foi concluida a {{ requisition.deliverDate|date:" d/m/Y" }}</th>
 
+        </tr>
 
-          </div>
-        </div>
-        </div>
-        <div class="card-main-left">
-          <table class="table table-borderless " >
-            <tr style="border-bottom: 1px solid rgb(241, 200, 200);">
-                <th class="text-right row-width" scope="row">Nº do Aluno:</th>
-                <td >{{requisition.user.username}}</th>
-    
-            </tr>
-            
-            <tr style="border-bottom: 1px solid rgb(241, 200, 200);">
-                <th class="text-right row-width" scope="row">Data de Requisição:</th>
-                <td >{{requisition.date}}</th>
-    
-            </tr>
-            <tr style="">
-              <th class="text-right row-width" scope="row">Data Limite:</th>
-              <td >{{requisition.end_date}}</th>
-  
-          </tr>
-        </table>
-        </div>
-        <div class="card-main-right" style="display: table;">
-          <div style=" margin:auto;display: table-cell;text-align: center;
-          vertical-align: middle;">
-            <a href="{%url 'detail-requisition' requisition.pk %} " class="btn-block mb-2 btn btn-danger" style="color:white ;width: 40%; margin:auto">Detalhes</a>
-            {%ifequal requisition.state 'Delayed'%}
-            <a href="{% url 'update-requisition' requisition.pk  %}" class="btn-block mt-2 btn btn-danger" style="color:white; width: 40%; margin:auto">Entregar</a>
-            {%endifequal%}
-            {%ifequal requisition.state 'Not Delivered'%}
-            <a href="{% url 'update-requisition' requisition.pk %}" class="btn-block mt-2 btn btn-danger" style="color:white; width: 40%; margin:auto">Entregar</a>
-            {%endifequal%}
-          </div>
-        </div>
+      </table>
+    </div>
+    <div class="card-main-right" style="display: table;">
+      <div style=" margin:auto;display: table-cell;text-align: center;vertical-align: middle;">
+          <!-- Botoes -->
 
-
+        <a href="{%url 'detail-requisition' requisition.pk %} " class="btn-block mb-2 btn btn-normal" style="color:white ;width: 40%; margin:auto">Detalhes</a>
 
       </div>
-          {%empty%}
-              <div style=text-align:center>
-                <h1>Não foram encontrados resultados</h1>
-                <a class="btn btn-danger "style="margin:70px auto; display:block;width:140px  " href="{%url 'camoes-home'%}">Voltar Atrás</a>
-              </div>
-  {%endfor%}
-  {% if is_paginated %}
-  
-  {% if page_obj.has_previous %}
-    <a class="btn btn-outline-danger mb-4" href="?page=1&{%url_replace%}">Primeira</a>
-    <a class="btn btn-outline-danger mb-4" href="?page={{ page_obj.previous_page_number }}&{%url_replace%}"><i class="fas fa-angle-left fa-lg"></i></a>
-  {% endif %}
-  
-  {% for num in page_obj.paginator.page_range %}
-    {% if page_obj.number == num %}
-      <a class="btn btn-danger mb-4" href="?page={{ num }}&{%url_replace%}">{{ num }}</a>
-    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-      <a class="btn btn-outline-danger mb-4" href="?page={{ num }}&{%url_replace%}">{{ num }}</a>
-    {% endif %}
-  {% endfor %}
-  
-  {% if page_obj.has_next %}
-    <a class="btn btn-outline-danger mb-4" href="?page={{ page_obj.next_page_number }}&{%url_replace%}"><i class="fas fa-angle-right fa-lg"></i></a>
-    <a class="btn btn-outline-danger mb-4" href="?page={{ page_obj.paginator.num_pages }}&{%url_replace%}">Última</a>
-  {% endif %}
-  
-  {% endif %}
-  </div>
-  </div>
+    </div>
   </div>
 
+    {% elif requisition.state|stringformat:"s" == 'OG' %}
+
+    <!-- on going -->
+  <div class="grid-card-container border border-danger card mb-3" style="">
+    <div class="card-image"style="">
+
+        <!-- icon de estado -->
+      <span style="left: 13%; font-size: 25px;color: #b30000; position:absolute;" class=" pr-2 pt-2" ></span>
+
+      <div style="display: table; margin: auto;width: 100%; height:100%;">
+        <div style=" margin:auto;display: table-cell;text-align: center; vertical-align: middle;">  
+          <!-- Texto de estado -->
+
+          <h5 style="font-weight: bold;margin: 0; margin-bottom: 5px;" >Estado</h5>
+          <p style="color: #b30000;font-weight: bold; font-size: large;">A Decorrer</p>
+
+        </div>    
+      </div>
+    </div>
+
+    <div class="card-main-left">
+      <table class="table table-borderless " >
+
+        <tr style="border-bottom: 1px solid rgb(241, 200, 200);">
+          <th class="text-right row-width" scope="row">Livro:</th>
+          <td ><span class="b-r">{{requisition.item}} | </span>{{requisition.item.content_object.title}}</th>
+          
+
+        </tr>          
+
+        <tr style="border-bottom: 1px solid rgb(241, 200, 200);">
+          <th class="text-right row-width" scope="row">Utlizador: </th>
+          <td ><span class="b-r">{{requisition.user.username}} |</span> {{requisition.user.profile.name}}</th>
+
+        </tr>
+        <tr>
+          <th class="text-right row-width" scope="row">Informação da requisição:</th>
+          
+          <td >{% requisition_info requisition.deadline requisition.date%}</th>
+
+        </tr>
+
+      </table>
+    </div>
+    <div class="card-main-right" style="display: table;">
+      <div style=" margin:auto;display: table-cell;text-align: center;vertical-align: middle;">
+          <!-- Botoes -->
+
+        <a href="{% url 'update-requisition' requisition.pk  %}" class="btn-block mb-2 btn btn-normal" style="color:white; width: 40%; margin:auto">Entregar</a>
+        <a href="{%url 'detail-requisition' requisition.pk %} " class="btn-block mt-2 btn btn-normal" style="color:white ;width: 40%; margin:auto">Detalhes</a>
+      </div>
+    </div>
   </div>
-  
+
+
+
+
+    <!-- Delayed -->
+    {% elif requisition.state|stringformat:"s" == 'DY' %}
+    <div class="grid-card-container border border-danger card mb-3" style="">
+    <div class="card-image"style="">
+
+        <!-- icon de estado -->
+      <span style="left: 13%; font-size: 25px;color: #b30000; position:absolute;" class=" pr-2 pt-2" ></span>
+
+      <div style="display: table; margin: auto;width: 100%; height:100%;">
+        <div style=" margin:auto;display: table-cell;text-align: center; vertical-align: middle;">  
+          <!-- Texto de estado -->
+
+          <h5 style="font-weight: bold;margin: 0; margin-bottom: 5px;" >Estado</h5>
+          <p style="color: #b30000;font-weight: bold; font-size: large;">Atrasado</p>
+
+        </div>    
+      </div>
+    </div>
+
+    <div class="card-main-left">
+      <table class="table table-borderless " >
+
+        <tr style="border-bottom: 1px solid rgb(241, 200, 200);">
+          <th class="text-right row-width" scope="row">Livro:</th>
+          <td ><span class="b-r">{{requisition.item}} | </span>{{requisition.item.content_object.title}}</th>
+          
+
+        </tr>          
+
+        <tr style="border-bottom: 1px solid rgb(241, 200, 200);">
+          <th class="text-right row-width" scope="row">Utlizador: </th>
+          <td ><span class="b-r">{{requisition.user.username}} |</span> {{requisition.user.profile.name}}</th>
+
+        </tr>
+        <tr>
+          <th class="text-right row-width" scope="row">Informação da requisição:</th>
+          
+          <td >{% requisition_info requisition.deadline requisition.date%}</th>
+
+        </tr>
+
+      </table>
+    </div>
+    <div class="card-main-right" style="display: table;">
+      <div style=" margin:auto;display: table-cell;text-align: center;vertical-align: middle;">
+          <!-- Botoes -->
+
+        <a href="{% url 'update-requisition' requisition.pk  %}" class="btn-block mb-2 btn btn-normal" style="color:white; width: 40%; margin:auto">Entregar</a>
+        <a href="{%url 'detail-requisition' requisition.pk %} " class="btn-block mt-2 btn btn-normal" style="color:white ;width: 40%; margin:auto">Detalhes</a>
+      </div>
+    </div>
+  </div>
+
+    {% endif %}
+
+
+
+  {% endfor %}
+<div>
+{% if is_paginated %}
+
+{% if page_obj.has_previous %}
+<a class="btn btn-outline-danger mb-4" href="?page=1&{%url_replace%}">Primeira</a>
+<a class="btn btn-outline-danger mb-4" href="?page={{ page_obj.previous_page_number }}&{%url_replace%}"><i class="fas fa-angle-left fa-lg"></i></a>
+{% endif %}
+
+{% for num in page_obj.paginator.page_range %}
+{% if page_obj.number == num %}
+<a class="btn btn-danger mb-4" href="?page={{ num }}&{%url_replace%}">{{ num }}</a>
+{% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+<a class="btn btn-outline-danger mb-4" href="?page={{ num }}&{%url_replace%}">{{ num }}</a>
+{% endif %}
+{% endfor %}
+
+{% if page_obj.has_next %}
+<a class="btn btn-outline-danger mb-4" href="?page={{ page_obj.next_page_number }}&{%url_replace%}"><i class="fas fa-angle-right fa-lg"></i></a>
+<a class="btn btn-outline-danger mb-4" href="?page={{ page_obj.paginator.num_pages }}&{%url_replace%}">Última</a>
+{% endif %}
+
+{% endif %}
 </div>
 </div>
 {% endblock content%}
-      
